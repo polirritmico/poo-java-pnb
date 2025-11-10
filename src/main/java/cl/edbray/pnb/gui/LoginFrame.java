@@ -4,6 +4,8 @@
  */
 package cl.edbray.pnb.gui;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author eduardo
@@ -15,6 +17,7 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     public LoginFrame() {
         initComponents();
+        this.getRootPane().setDefaultButton(loginButton);
     }
 
     /**
@@ -151,12 +154,22 @@ public class LoginFrame extends javax.swing.JFrame {
         loginButton.setFont(new java.awt.Font("sansserif", 1, 16)); // NOI18N
         loginButton.setForeground(new java.awt.Color(244, 244, 244));
         loginButton.setText("Iniciar sesión");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
         buttonsRowPanel.add(loginButton);
 
         registerButton.setBackground(new java.awt.Color(68, 68, 68));
         registerButton.setFont(new java.awt.Font("sansserif", 1, 16)); // NOI18N
         registerButton.setForeground(new java.awt.Color(225, 225, 225));
         registerButton.setText("Salir");
+        registerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerButtonActionPerformed(evt);
+            }
+        });
         buttonsRowPanel.add(registerButton);
 
         buttonsPanel.add(buttonsRowPanel);
@@ -185,6 +198,27 @@ public class LoginFrame extends javax.swing.JFrame {
     private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameFieldActionPerformed
+
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_registerButtonActionPerformed
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        if (username.equals("admin") && password.equals("1234")) {
+            MainFrame main = new MainFrame();
+            main.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Usuario o contraseña incorrectos",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
      * @param args the command line arguments
