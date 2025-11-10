@@ -64,7 +64,7 @@ public class LoginFrame extends javax.swing.JFrame {
         leftPanel.setLayout(new java.awt.GridLayout(1, 1));
 
         logo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cl/edbray/pnb/gui/logo.png"))); // NOI18N
+        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png")));
         logo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         logo.setMaximumSize(new java.awt.Dimension(400, 500));
         logo.setMinimumSize(new java.awt.Dimension(400, 500));
