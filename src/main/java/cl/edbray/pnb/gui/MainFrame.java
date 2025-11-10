@@ -26,143 +26,152 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(10, 0));
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(50, 0));
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(50, 0));
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenu6 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        mainPanel = new javax.swing.JPanel();
+        statusBar = new javax.swing.JPanel();
+        leftSeparator = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(10, 0));
+        statusUsernameLabel = new javax.swing.JLabel();
+        statusUsername = new javax.swing.JLabel();
+        separator1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(50, 0));
+        statusRoleLabel = new javax.swing.JLabel();
+        statusRole = new javax.swing.JLabel();
+        separator2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(50, 0));
+        statusTimeLabel = new javax.swing.JLabel();
+        statusTime = new javax.swing.JLabel();
+        mainMenu = new javax.swing.JMenuBar();
+        menuFile = new javax.swing.JMenu();
+        menuEntryCloseSession = new javax.swing.JMenuItem();
+        menuEntryQuit = new javax.swing.JMenuItem();
+        menuManagement = new javax.swing.JMenu();
+        menuEntryUsers = new javax.swing.JMenuItem();
+        menuEntryProducts = new javax.swing.JMenuItem();
+        menuOperation = new javax.swing.JMenu();
+        menuEntrySales = new javax.swing.JMenuItem();
+        menuReports = new javax.swing.JMenu();
+        menuEntryDaySales = new javax.swing.JMenuItem();
+        menuEntryTopSellers = new javax.swing.JMenuItem();
+        menuEvents = new javax.swing.JMenu();
+        menuEntryTournaments = new javax.swing.JMenuItem();
+        menuHelp = new javax.swing.JMenu();
+        menuEntryAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Pixel & Bean – Sistema de Gestión");
         setPreferredSize(new java.awt.Dimension(900, 600));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 900, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 546, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(1214, 30));
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
-        jPanel3.add(filler1);
+        statusBar.setPreferredSize(new java.awt.Dimension(1214, 30));
+        statusBar.setLayout(new javax.swing.BoxLayout(statusBar, javax.swing.BoxLayout.LINE_AXIS));
+        statusBar.add(leftSeparator);
 
-        jLabel1.setText("Usuario Activo: ");
-        jPanel3.add(jLabel1);
+        statusUsernameLabel.setText("Usuario Activo: ");
+        statusBar.add(statusUsernameLabel);
 
-        jLabel2.setText("<USUARIO>");
-        jPanel3.add(jLabel2);
-        jPanel3.add(filler2);
+        statusUsername.setText("Nombre de usuario");
+        statusBar.add(statusUsername);
+        statusBar.add(separator1);
 
-        jLabel3.setText("Rol: ");
-        jPanel3.add(jLabel3);
+        statusRoleLabel.setText("Rol: ");
+        statusBar.add(statusRoleLabel);
 
-        jLabel4.setText("<ROL>");
-        jPanel3.add(jLabel4);
-        jPanel3.add(filler3);
+        statusRole.setText("Usuario");
+        statusBar.add(statusRole);
+        statusBar.add(separator2);
 
-        jLabel5.setText("Hora del sistema: ");
-        jPanel3.add(jLabel5);
+        statusTimeLabel.setText("Hora actual: ");
+        statusBar.add(statusTimeLabel);
 
-        jLabel6.setText("<HORA>");
-        jPanel3.add(jLabel6);
+        statusTime.setText("23:59");
+        statusBar.add(statusTime);
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(statusBar, java.awt.BorderLayout.SOUTH);
 
-        jMenu1.setText("Archivo");
+        menuFile.setText("Archivo");
 
-        jMenuItem1.setLabel("Cerrar sesión");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuEntryCloseSession.setLabel("Cerrar sesión");
+        menuEntryCloseSession.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuEntryCloseSessionActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        menuFile.add(menuEntryCloseSession);
 
-        jMenuItem2.setLabel("Salir");
-        jMenu1.add(jMenuItem2);
+        menuEntryQuit.setLabel("Salir");
+        menuEntryQuit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryQuitActionPerformed(evt);
+            }
+        });
+        menuFile.add(menuEntryQuit);
 
-        jMenuBar1.add(jMenu1);
+        mainMenu.add(menuFile);
 
-        jMenu2.setText("Gestión");
+        menuManagement.setText("Gestión");
 
-        jMenuItem3.setLabel("Usuarios");
-        jMenu2.add(jMenuItem3);
+        menuEntryUsers.setLabel("Usuarios");
+        menuManagement.add(menuEntryUsers);
 
-        jMenuItem4.setLabel("Productos");
-        jMenu2.add(jMenuItem4);
+        menuEntryProducts.setLabel("Productos");
+        menuManagement.add(menuEntryProducts);
 
-        jMenuBar1.add(jMenu2);
+        mainMenu.add(menuManagement);
 
-        jMenu3.setText("Operación");
+        menuOperation.setText("Operación");
 
-        jMenuItem8.setText("Ventas");
-        jMenu3.add(jMenuItem8);
+        menuEntrySales.setText("Ventas");
+        menuOperation.add(menuEntrySales);
 
-        jMenuBar1.add(jMenu3);
+        mainMenu.add(menuOperation);
 
-        jMenu4.setText("Reportes");
+        menuReports.setText("Reportes");
 
-        jMenuItem7.setText("Ventas del día");
-        jMenu4.add(jMenuItem7);
+        menuEntryDaySales.setText("Ventas del día");
+        menuReports.add(menuEntryDaySales);
 
-        jMenuItem9.setText("Más vendidos");
-        jMenu4.add(jMenuItem9);
+        menuEntryTopSellers.setText("Más vendidos");
+        menuReports.add(menuEntryTopSellers);
 
-        jMenuBar1.add(jMenu4);
+        mainMenu.add(menuReports);
 
-        jMenu5.setText("Eventos");
+        menuEvents.setText("Eventos");
 
-        jMenuItem6.setText("Torneos");
-        jMenu5.add(jMenuItem6);
+        menuEntryTournaments.setText("Torneos");
+        menuEvents.add(menuEntryTournaments);
 
-        jMenuBar1.add(jMenu5);
+        mainMenu.add(menuEvents);
 
-        jMenu6.setText("Ayuda");
+        menuHelp.setText("Ayuda");
 
-        jMenuItem5.setText("Acerca de...");
-        jMenu6.add(jMenuItem5);
+        menuEntryAbout.setText("Acerca de...");
+        menuHelp.add(menuEntryAbout);
 
-        jMenuBar1.add(jMenu6);
+        mainMenu.add(menuHelp);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(mainMenu);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void menuEntryCloseSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryCloseSessionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_menuEntryCloseSessionActionPerformed
+
+    private void menuEntryQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryQuitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_menuEntryQuitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,32 +209,32 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.Box.Filler leftSeparator;
+    private javax.swing.JMenuBar mainMenu;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem menuEntryAbout;
+    private javax.swing.JMenuItem menuEntryCloseSession;
+    private javax.swing.JMenuItem menuEntryDaySales;
+    private javax.swing.JMenuItem menuEntryProducts;
+    private javax.swing.JMenuItem menuEntryQuit;
+    private javax.swing.JMenuItem menuEntrySales;
+    private javax.swing.JMenuItem menuEntryTopSellers;
+    private javax.swing.JMenuItem menuEntryTournaments;
+    private javax.swing.JMenuItem menuEntryUsers;
+    private javax.swing.JMenu menuEvents;
+    private javax.swing.JMenu menuFile;
+    private javax.swing.JMenu menuHelp;
+    private javax.swing.JMenu menuManagement;
+    private javax.swing.JMenu menuOperation;
+    private javax.swing.JMenu menuReports;
+    private javax.swing.Box.Filler separator1;
+    private javax.swing.Box.Filler separator2;
+    private javax.swing.JPanel statusBar;
+    private javax.swing.JLabel statusRole;
+    private javax.swing.JLabel statusRoleLabel;
+    private javax.swing.JLabel statusTime;
+    private javax.swing.JLabel statusTimeLabel;
+    private javax.swing.JLabel statusUsername;
+    private javax.swing.JLabel statusUsernameLabel;
     // End of variables declaration//GEN-END:variables
 }
