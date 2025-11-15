@@ -7,6 +7,7 @@ package cl.edbray.pnb.gui;
 import java.awt.CardLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -180,7 +181,14 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEntryCloseSessionActionPerformed
 
     private void menuEntryQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryQuitActionPerformed
-        System.exit(0);
+        int userChoice = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de que desea salir?",
+            "Confirmar salida",
+            JOptionPane.YES_NO_OPTION
+        );
+        if (userChoice == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_menuEntryQuitActionPerformed
 
     /**
@@ -229,6 +237,11 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel.setLayout(cardLayout);
 
         mainPanel.add(createHomePanel(), "HOME");
+        showView("HOME");
+    }
+
+    private void showView(String name) {
+        cardLayout.show(mainPanel, name);
     }
 
     private JPanel createHomePanel() {
