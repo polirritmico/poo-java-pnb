@@ -4,17 +4,27 @@
  */
 package cl.edbray.pnb.gui;
 
+import java.awt.CardLayout;
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
 /**
  *
  * @author eduardo
  */
 public class MainFrame extends javax.swing.JFrame {
+    private CardLayout cardLayout;
 
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
+        setupNavigation();
+        applyCustomTheme();
     }
 
     /**
@@ -206,6 +216,34 @@ public class MainFrame extends javax.swing.JFrame {
                 new MainFrame().setVisible(true);
             }
         });
+    }
+
+    private void applyCustomTheme() {
+        statusBar.setBackground(UIManager.getColor("MenuBar.background"));
+        statusBar.setForeground(UIManager.getColor("MenuBar.foreground"));
+        statusBar.setBorder(UIManager.getBorder("MenuBar.border"));
+    }
+
+    private void setupNavigation() {
+        cardLayout = new CardLayout();
+        mainPanel.setLayout(cardLayout);
+
+        mainPanel.add(createHomePanel(), "HOME");
+    }
+
+    private JPanel createHomePanel() {
+        JPanel homePanel = new JPanel(new GridBagLayout());
+        JLabel content = new JLabel(
+            "<html><center>" +
+            "<h1>☕ Pixel & Beans</h1>" +
+            "<p>Sistema de Gestión para <b>Café Arcade</b>.</p>" +
+            "<p style='margin-top: 20px;'>Selecciona una opción del menú superior para comenzar.</p>" +
+            "</center></html>"
+        );
+
+        content.setHorizontalAlignment(SwingConstants.CENTER);
+        homePanel.add(content);
+        return homePanel;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
