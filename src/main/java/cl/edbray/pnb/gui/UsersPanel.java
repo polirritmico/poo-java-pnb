@@ -63,7 +63,7 @@ public class UsersPanel extends javax.swing.JPanel {
         fullNameLabel = new javax.swing.JLabel();
         fullNameField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
-        roleField = new javax.swing.JTextField();
+        roleComboBox = new javax.swing.JComboBox<>();
         activeCheck = new javax.swing.JCheckBox();
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -125,7 +125,9 @@ public class UsersPanel extends javax.swing.JPanel {
 
         roleLabel.setText("Rol:");
         formPanel.add(roleLabel);
-        formPanel.add(roleField);
+
+        roleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ADMIN", "OPERADOR" }));
+        formPanel.add(roleComboBox);
 
         activeCheck.setText("Usuario activo");
         formPanel.add(activeCheck);
@@ -157,7 +159,7 @@ public class UsersPanel extends javax.swing.JPanel {
     private javax.swing.JButton newUserButton;
     private javax.swing.JTextField passwordField;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JTextField roleField;
+    private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JButton saveButton;
     private javax.swing.JTextField searchField;
