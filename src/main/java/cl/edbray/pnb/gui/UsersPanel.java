@@ -159,6 +159,11 @@ public class UsersPanel extends javax.swing.JPanel {
         searchPanel.add(searchField);
 
         newUserButton.setText("Nuevo Usuario");
+        newUserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newUserButtonActionPerformed(evt);
+            }
+        });
         searchPanel.add(newUserButton);
 
         add(searchPanel, java.awt.BorderLayout.PAGE_START);
@@ -211,6 +216,11 @@ public class UsersPanel extends javax.swing.JPanel {
         formPanel.add(saveButton);
 
         cancelButton.setText("Cancelar");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         formPanel.add(cancelButton);
 
         deleteButton.setText("Eliminar");
@@ -222,6 +232,14 @@ public class UsersPanel extends javax.swing.JPanel {
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordFieldActionPerformed
+
+    private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
+        cleanForm();
+    }//GEN-LAST:event_newUserButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        cleanForm();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
