@@ -50,6 +50,20 @@ public class UsersPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        usersTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent ev) {
+                if (ev.getClickCount() == 2) {
+                    int row = usersTable.getSelectedRow();
+                    if (row >= 0) {
+                        selectedUser = tableModel.getUserAt(row);
+                        loadInForm(selectedUser);
+                        usernameField.requestFocus();
+                    }
+                }
+            }
+        });
     }
 
     private void loadInForm(User user) {
