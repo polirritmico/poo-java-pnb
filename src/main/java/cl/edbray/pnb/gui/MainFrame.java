@@ -177,7 +177,15 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuEntryCloseSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryCloseSessionActionPerformed
-        // TODO add your handling code here:
+        int userChoice = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de que desea cerrar la sesión?",
+            "Confirmar",
+            JOptionPane.YES_NO_OPTION
+        );
+        if (userChoice == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new cl.edbray.pnb.gui.LoginFrame().setVisible(true);
+        }
     }//GEN-LAST:event_menuEntryCloseSessionActionPerformed
 
     private void menuEntryQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryQuitActionPerformed
