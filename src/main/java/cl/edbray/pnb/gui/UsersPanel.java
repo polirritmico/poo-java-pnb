@@ -28,6 +28,7 @@ public class UsersPanel extends javax.swing.JPanel {
         setupTable();
         setupListeners();
         loadUsers();
+        cleanForm();
     }
 
     private void setupTable() {
@@ -100,6 +101,17 @@ public class UsersPanel extends javax.swing.JPanel {
         users.add(new User(3, "cajero", "caj123", "María González", "OPERADOR", true));
 
         tableModel.setUsers(users);
+    }
+
+    private void cleanForm() {
+        selectedUser = null;
+        usernameField.setText("");
+        passwordField.setText("");
+        fullNameField.setText("");
+        roleComboBox.setSelectedIndex(0);
+        activeCheck.setSelected(true);
+        deleteButton.setEnabled(false);
+        usernameField.requestFocus();
     }
 
     /**
