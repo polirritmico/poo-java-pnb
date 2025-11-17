@@ -133,6 +133,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuManagement.setText("Gestión");
 
         menuEntryUsers.setLabel("Usuarios");
+        menuEntryUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryUsersActionPerformed(evt);
+            }
+        });
         menuManagement.add(menuEntryUsers);
 
         menuEntryProducts.setLabel("Productos");
@@ -219,6 +224,10 @@ public class MainFrame extends javax.swing.JFrame {
         );
     }//GEN-LAST:event_menuEntryAboutActionPerformed
 
+    private void menuEntryUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryUsersActionPerformed
+        showView("USERS");
+    }//GEN-LAST:event_menuEntryUsersActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -265,6 +274,7 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel.setLayout(cardLayout);
 
         mainPanel.add(createHomePanel(), "HOME");
+        mainPanel.add(new UsersPanel(), "USERS");
         showView("HOME");
     }
 
