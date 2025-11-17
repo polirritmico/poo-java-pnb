@@ -26,6 +26,7 @@ public class UsersPanel extends javax.swing.JPanel {
         initComponents();
         setupTable();
         setupListeners();
+        loadUsers();
     }
 
     private void setupTable() {
@@ -74,6 +75,15 @@ public class UsersPanel extends javax.swing.JPanel {
         activeCheck.setSelected(user.isActive());
 
         deleteButton.setEnabled(true);
+    }
+
+    private void loadUsers() {
+        List<User> users = new ArrayList<>();
+        users.add(new User(1, "admin", "admin123", "Administrador del Sistema", "ADMIN", true));
+        users.add(new User(2, "operador", "op123", "Juan Pérez", "OPERADOR", true));
+        users.add(new User(3, "cajero", "caj123", "María González", "OPERADOR", true));
+
+        tableModel.setUsers(users);
     }
 
     /**
