@@ -4,17 +4,39 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.model.User;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
+
 /**
  *
  * @author eduardo
  */
 public class UsersPanel extends javax.swing.JPanel {
 
+    private User selectedUser;
+    private UserTableModel tableModel;
+
     /**
      * Creates new form UsersPanel
      */
     public UsersPanel() {
         initComponents();
+        setupTable();
+    }
+
+    private void setupTable() {
+        tableModel = new UserTableModel();
+        usersTable.setModel(tableModel);
+        usersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        usersTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        usersTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+        usersTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+        usersTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+        usersTable.getColumnModel().getColumn(4).setPreferredWidth(60);
     }
 
     /**
@@ -146,4 +168,51 @@ public class UsersPanel extends javax.swing.JPanel {
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTable usersTable;
     // End of variables declaration//GEN-END:variables
+
+    private class UserTableModel extends AbstractTableModel {
+        private List<User> users = new ArrayList<>();
+        private String[] columnNames = { "ID", "Usuario", "Nombre completo", "Rol", "Activo" };
+
+        public void setUsers(List<User> users) {
+            this.users = users;
+            fireTableDataChanged();
+        }
+
+        public User getUserAt(int row) {
+            return users.get(row);
+        }
+
+        @Override
+        public int getRowCount() {
+            return users.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            User user = users.get(row);
+            return switch (column) {
+                case 0 -> user.getId();
+                case 1 -> user.getUsername();
+                case 2 -> user.getFullName();
+                case 3 -> user.getRole();
+                case 4 -> user.isActive() ? "Sí" : "No";
+                default -> null;
+            };
+        }
+    }
 }
