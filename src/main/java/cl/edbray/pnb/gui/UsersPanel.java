@@ -25,6 +25,7 @@ public class UsersPanel extends javax.swing.JPanel {
     public UsersPanel() {
         initComponents();
         setupTable();
+        setupListeners();
     }
 
     private void setupTable() {
@@ -37,6 +38,28 @@ public class UsersPanel extends javax.swing.JPanel {
         usersTable.getColumnModel().getColumn(2).setPreferredWidth(200);
         usersTable.getColumnModel().getColumn(3).setPreferredWidth(80);
         usersTable.getColumnModel().getColumn(4).setPreferredWidth(60);
+    }
+
+    private void setupListeners() {
+        usersTable.getSelectionModel().addListSelectionListener(ev -> {
+            if (!ev.getValueIsAdjusting()) {
+                int selectedRow = usersTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    selectedUser = tableModel.getUserAt(selectedRow);
+                    loadInForm(selectedUser);
+                }
+            }
+        });
+    }
+
+    private void loadInForm(User user) {
+        usernameField.setText(user.getUsername());
+        passwordField.setText(user.getPassword());
+        fullNameField.setText(user.getFullName());
+        roleComboBox.setSelectedItem(user.getRole());
+        activeCheck.setSelected(user.isActive());
+
+        deleteButton.setEnabled(true);
     }
 
     /**
