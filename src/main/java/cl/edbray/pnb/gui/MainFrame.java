@@ -167,6 +167,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuHelp.setText("Ayuda");
 
         menuEntryAbout.setText("Acerca de...");
+        menuEntryAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryAboutActionPerformed(evt);
+            }
+        });
         menuHelp.add(menuEntryAbout);
 
         mainMenu.add(menuHelp);
@@ -198,6 +203,21 @@ public class MainFrame extends javax.swing.JFrame {
             System.exit(0);
         }
     }//GEN-LAST:event_menuEntryQuitActionPerformed
+
+    private void menuEntryAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryAboutActionPerformed
+        JOptionPane.showMessageDialog(this,
+            "<html><center>" +
+            "  <h2>Pixel & Beans</h2>" +
+            "  <p>Sistema de gestión para <b>Café Arcade</b>.</p>" +
+            "  <p>Versión: 0.1.0</p>" +
+            "  <p style='margin-top: 10px;'>Desarrollado por: Eduardo Bray</p>" +
+            "  <p>Asignatura: Programación Orientada a Objetos</p>" +
+            "  <p>Año: 2025</p>" +
+            "</center></html>",
+            "Acerda de",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }//GEN-LAST:event_menuEntryAboutActionPerformed
 
     /**
      * @param args the command line arguments
