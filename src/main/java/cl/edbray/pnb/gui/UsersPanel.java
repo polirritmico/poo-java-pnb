@@ -223,6 +223,11 @@ public class UsersPanel extends javax.swing.JPanel {
         formPanel.add(cancelButton);
 
         deleteButton.setText("Eliminar");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
         formPanel.add(deleteButton);
 
         add(formPanel, java.awt.BorderLayout.SOUTH);
@@ -261,6 +266,26 @@ public class UsersPanel extends javax.swing.JPanel {
         cleanForm();
         loadUsers();
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        if (selectedUser == null) {
+            return;
+        }
+
+        int userChoice = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de eliminar el usuario '" + selectedUser.getUsername() + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
+        );
+        if (userChoice == JOptionPane.YES_OPTION) {
+            // TODO: delete user
+            System.out.println("Eliminando usuario: " + selectedUser);
+            JOptionPane.showMessageDialog(this, "Usuario eliminado exitosamente.");
+            cleanForm();
+            loadUsers();
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void updateUser(
         User user,
