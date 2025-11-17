@@ -7,8 +7,8 @@ package cl.edbray.pnb.gui;
 import cl.edbray.pnb.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -134,7 +134,7 @@ public class UsersPanel extends javax.swing.JPanel {
         usernameLabel = new javax.swing.JLabel();
         usernameField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
-        passwordField = new javax.swing.JTextField();
+        passwordField = new javax.swing.JPasswordField();
         fullNameLabel = new javax.swing.JLabel();
         fullNameField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
@@ -191,12 +191,6 @@ public class UsersPanel extends javax.swing.JPanel {
 
         passwordLabel.setText("Contraseña");
         formPanel.add(passwordLabel);
-
-        passwordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordFieldActionPerformed(evt);
-            }
-        });
         formPanel.add(passwordField);
 
         fullNameLabel.setText("Nombre completo:");
@@ -213,6 +207,11 @@ public class UsersPanel extends javax.swing.JPanel {
         formPanel.add(activeCheck);
 
         saveButton.setText("Guardar");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
         formPanel.add(saveButton);
 
         cancelButton.setText("Cancelar");
@@ -229,10 +228,6 @@ public class UsersPanel extends javax.swing.JPanel {
         add(formPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passwordFieldActionPerformed
-
     private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
         cleanForm();
     }//GEN-LAST:event_newUserButtonActionPerformed
@@ -241,6 +236,63 @@ public class UsersPanel extends javax.swing.JPanel {
         cleanForm();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        if (!validateForm()) {
+            return;
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private boolean validateForm() {
+        if (!validateUsername()) { return false; }
+        if (!validatePassword()) { return false; }
+        if (!validateFullName()) { return false; }
+        return true;
+    }
+
+    private boolean validateUsername() {
+        if (usernameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre de usuario es obligatorio.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            usernameField.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validatePassword() {
+        if (passwordField.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(
+                this,
+                "La contraseña es obligatoria.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            passwordField.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validateFullName() {
+        if (fullNameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre completo es obligatorio",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            fullNameField.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox activeCheck;
@@ -250,7 +302,7 @@ public class UsersPanel extends javax.swing.JPanel {
     private javax.swing.JTextField fullNameField;
     private javax.swing.JLabel fullNameLabel;
     private javax.swing.JButton newUserButton;
-    private javax.swing.JTextField passwordField;
+    private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
