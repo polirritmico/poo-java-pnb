@@ -4,7 +4,7 @@ package cl.edbray.pnb.model;
  *
  * @author eduardo
  */
-public class Usuario {
+public class User {
     private int id;
     private String username;
     private String password;
@@ -12,9 +12,9 @@ public class Usuario {
     private String rol;
     private boolean activo;
     
-    public Usuario() {}
+    public User() {}
 
-    public Usuario(int id, String username, String password, String nombreCompleto, String rol, boolean activo) {
+    public User(int id, String username, String password, String nombreCompleto, String rol, boolean activo) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -47,27 +47,27 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getNombreCompleto() {
+    public String getFullName() {
         return nombreCompleto;
     }
 
-    public void setNombreCompleto(String nombreCompleto) {
+    public void setFullName(String nombreCompleto) {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public String getRol() {
+    public String getRole() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRole(String rol) {
         this.rol = rol;
     }
 
-    public boolean isActivo() {
+    public boolean isActive() {
         return activo;
     }
 
-    public void setActivo(boolean activo) {
+    public void setActive(boolean activo) {
         this.activo = activo;
     }
     

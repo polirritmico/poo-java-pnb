@@ -1,6 +1,6 @@
 package cl.edbray.pnb.model;
 
-public class Producto {
+public class Product {
     private int id;
     private String nombre;
     private String categoria;
@@ -8,9 +8,9 @@ public class Producto {
     private double precio;
     private boolean activo;
     
-    public Producto() {}
+    public Product() {}
 
-    public Producto(int id, String nombre, String categoria, String tipo, double precio, boolean activo) {
+    public Product(int id, String nombre, String categoria, String tipo, double precio, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;

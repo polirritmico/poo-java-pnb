@@ -2,7 +2,7 @@ package cl.edbray.pnb.model;
 
 import java.time.LocalDateTime;
 
-public class Venta {
+public class Sell {
     private int id;
     private LocalDateTime fechaHora;
     private int usuarioId;
@@ -10,9 +10,9 @@ public class Venta {
     private double total;
     private String estado;
     
-    public Venta() {}
+    public Sell() {}
 
-    public Venta(int id, LocalDateTime fechaHora, int usuarioId, String usuarioNombre, double total, String estado) {
+    public Sell(int id, LocalDateTime fechaHora, int usuarioId, String usuarioNombre, double total, String estado) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.usuarioId = usuarioId;
