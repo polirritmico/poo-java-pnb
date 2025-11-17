@@ -8,6 +8,7 @@ import cl.edbray.pnb.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -44,11 +45,7 @@ public class UsersPanel extends javax.swing.JPanel {
     private void setupListeners() {
         usersTable.getSelectionModel().addListSelectionListener(ev -> {
             if (!ev.getValueIsAdjusting()) {
-                int selectedRow = usersTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    selectedUser = tableModel.getUserAt(selectedRow);
-                    loadInForm(selectedUser);
-                }
+                selectUserInTable();
             }
         });
 
@@ -56,15 +53,34 @@ public class UsersPanel extends javax.swing.JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent ev) {
                 if (ev.getClickCount() == 2) {
-                    int row = usersTable.getSelectedRow();
-                    if (row >= 0) {
-                        selectedUser = tableModel.getUserAt(row);
-                        loadInForm(selectedUser);
-                        usernameField.requestFocus();
-                    }
+                    editRowUser();
                 }
             }
         });
+
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
+        });
+    }
+
+    private void filterUsers() {
+        String text = searchField.getText();
+        // TODO: implement
+    }
+
+    private void selectUserInTable() {
+        int selectedRow = usersTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            selectedUser = tableModel.getUserAt(selectedRow);
+            loadInForm(selectedUser);
+        }
+    }
+
+    private void editRowUser() {
+        selectUserInTable();
+        usernameField.requestFocus();
     }
 
     private void loadInForm(User user) {
