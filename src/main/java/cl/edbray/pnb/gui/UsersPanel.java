@@ -240,7 +240,42 @@ public class UsersPanel extends javax.swing.JPanel {
         if (!validateForm()) {
             return;
         }
+
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+        String fullName = fullNameField.getText().trim();
+        String role = (String) roleComboBox.getSelectedItem();
+        boolean active = activeCheck.isSelected();
+
+        if (selectedUser == null) {
+            User newUser = new User(0, username, password, fullName, role, active);
+            // TODO: save in service
+            System.out.println("Guardando usuario: " + newUser);
+            JOptionPane.showMessageDialog(this, "Usuario guardado exitosamente.");
+        } else {
+            updateUser(selectedUser, username, password, fullName, role, active);
+            System.out.println("Actualizando usuario: " + selectedUser);
+            JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
+        }
+
+        cleanForm();
+        loadUsers();
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void updateUser(
+        User user,
+        String username,
+        String password,
+        String fullName,
+        String role,
+        boolean active)
+    {
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setFullName(fullName);
+        user.setRole(role);
+        user.setActive(active);
+    }
 
     private boolean validateForm() {
         if (!validateUsername()) { return false; }
