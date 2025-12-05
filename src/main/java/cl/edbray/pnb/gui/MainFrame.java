@@ -141,6 +141,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuManagement.add(menuEntryUsers);
 
         menuEntryProducts.setLabel("Productos");
+        menuEntryProducts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryProductsActionPerformed(evt);
+            }
+        });
         menuManagement.add(menuEntryProducts);
 
         mainMenu.add(menuManagement);
@@ -148,6 +153,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuOperation.setText("Operación");
 
         menuEntrySales.setText("Ventas");
+        menuEntrySales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntrySalesActionPerformed(evt);
+            }
+        });
         menuOperation.add(menuEntrySales);
 
         mainMenu.add(menuOperation);
@@ -155,6 +165,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuReports.setText("Reportes");
 
         menuEntryDaySales.setText("Ventas del día");
+        menuEntryDaySales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryDaySalesActionPerformed(evt);
+            }
+        });
         menuReports.add(menuEntryDaySales);
 
         menuEntryTopSellers.setText("Más vendidos");
@@ -165,6 +180,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuEvents.setText("Eventos");
 
         menuEntryTournaments.setText("Torneos");
+        menuEntryTournaments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryTournamentsActionPerformed(evt);
+            }
+        });
         menuEvents.add(menuEntryTournaments);
 
         mainMenu.add(menuEvents);
@@ -228,6 +248,26 @@ public class MainFrame extends javax.swing.JFrame {
         showView("USERS");
     }//GEN-LAST:event_menuEntryUsersActionPerformed
 
+    private void menuEntryProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryProductsActionPerformed
+        showView("PRODUCTS");
+    }//GEN-LAST:event_menuEntryProductsActionPerformed
+
+    private void menuEntryTournamentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryTournamentsActionPerformed
+        showView("EVENTS");
+    }//GEN-LAST:event_menuEntryTournamentsActionPerformed
+
+    private void menuEntrySalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntrySalesActionPerformed
+        showView("SALES");
+    }//GEN-LAST:event_menuEntrySalesActionPerformed
+
+    private void menuEntryDaySalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryDaySalesActionPerformed
+        showView("REPORTS");
+        JOptionPane.showMessageDialog(this,
+        "El reporte Top Productos estará disponible a futuro",
+        "En desarrollo",
+        JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_menuEntryDaySalesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -275,6 +315,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainPanel.add(createHomePanel(), "HOME");
         mainPanel.add(new UsersPanel(), "USERS");
+        mainPanel.add(new ProductsPanel(), "PRODUCTS");
+        mainPanel.add(new EventsPanel(), "EVENTS");
+        mainPanel.add(new SalesPanel(), "SALES");
+        mainPanel.add(new ReportsPanel(), "REPORTS");
         showView("HOME");
     }
 
