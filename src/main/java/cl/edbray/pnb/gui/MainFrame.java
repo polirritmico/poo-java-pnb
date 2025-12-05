@@ -173,6 +173,11 @@ public class MainFrame extends javax.swing.JFrame {
         menuReports.add(menuEntryDaySales);
 
         menuEntryTopSellers.setText("Más vendidos");
+        menuEntryTopSellers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEntryTopSellersActionPerformed(evt);
+            }
+        });
         menuReports.add(menuEntryTopSellers);
 
         mainMenu.add(menuReports);
@@ -262,11 +267,15 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void menuEntryDaySalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryDaySalesActionPerformed
         showView("REPORTS");
+    }//GEN-LAST:event_menuEntryDaySalesActionPerformed
+
+    private void menuEntryTopSellersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryTopSellersActionPerformed
+        showView("REPORTS");
         JOptionPane.showMessageDialog(this,
-        "El reporte Top Productos estará disponible a futuro",
+        "El reporte de productos más vendidos estará disponible a futuro",
         "En desarrollo",
         JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_menuEntryDaySalesActionPerformed
+    }//GEN-LAST:event_menuEntryTopSellersActionPerformed
 
     /**
      * @param args the command line arguments
