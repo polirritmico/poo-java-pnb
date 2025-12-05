@@ -4,17 +4,120 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.model.Product;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.table.AbstractTableModel;
+
 /**
  *
  * @author eduardo
  */
 public class ProductsPanel extends javax.swing.JPanel {
+    private ProductTableModel tableModel;
+    private Product selectedProduct;
 
     /**
      * Creates new form ProductsPanel
      */
     public ProductsPanel() {
         initComponents();
+        setupTable();
+        setupListeners();
+        loadProducts();
+    }
+    
+    private void setupTable() {
+        tableModel = new ProductTableModel();
+        productsTable.setModel(tableModel);
+        productsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        productsTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+        productsTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        productsTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        productsTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+        productsTable.getColumnModel().getColumn(4).setPreferredWidth(60);
+        productsTable.getColumnModel().getColumn(5).setPreferredWidth(40);
+    }
+    
+    private void setupListeners() {
+        productsTable.getSelectionModel().addListSelectionListener(ev -> {
+            if (!ev.getValueIsAdjusting()) {
+                int selectedRow = productsTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    selectedProduct = tableModel.getProductAt(selectedRow);
+                    loadToForm(selectedProduct);
+                }
+            }
+        });
+        
+        productsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent ev) {
+                if (ev.getClickCount() == 2) {
+                    int row = productsTable.getSelectedRow();
+                    if (row >= 0) {
+                        selectedProduct = tableModel.getProductAt(row);
+                        loadToForm(selectedProduct);
+                        nameField.requestFocus();
+                    }
+                }
+            }
+        });
+        
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { filter(); }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) { filter(); }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) { }
+            
+            private void filter() {
+                String text = searchField.getText();
+                // TODO
+            }
+        });
+    }
+    
+    private void loadProducts() {
+        // Datos de ejemplo (stub)
+        List<Product> products = new ArrayList<>();
+
+        // "ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"
+        products.add(new Product(1, "Coca-cola", "Bebida", "Gaseosa", 1000, true));
+        products.add(new Product(2, "Latte", "Bebida", "Café de especialidad", 2500, true));
+        products.add(new Product(3, "Brownie Retro", "Snack", "Chocolate", 1800, true));
+        products.add(new Product(4, "Papas Pixel", "Snack", "Saladas", 1500, true));
+        products.add(new Product(5, "Cabina Arcade 30 min", "Tiempo", "Arriendo", 3000, true));
+
+        tableModel.setProducts(products);
+    }
+    
+    private void loadToForm(Product product) {
+        nameField.setText(product.getNombre());
+        categoryComboBox.setSelectedItem(product.getCategoria());
+        typeComboBox.setSelectedItem(product.getTipo());
+        priceField.setText(String.format("$%,.0f", product.getPrecio()));
+        enabledCheck.setEnabled(product.isActivo());
+        
+        deleteButton.setEnabled(true);
+    }
+    
+    private void cleanForm() {
+        selectedProduct = null;
+        
+        nameField.setText("");
+        categoryComboBox.setSelectedIndex(0);
+        typeComboBox.setSelectedIndex(0);
+        priceField.setText("0");
+        enabledCheck.setEnabled(false);
+        deleteButton.setEnabled(false);
+        
+        nameField.requestFocus();
     }
 
     /**
@@ -43,7 +146,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         categoryLabel = new javax.swing.JLabel();
         categoryComboBox = new javax.swing.JComboBox<>();
         typeLabel = new javax.swing.JLabel();
-        typeField = new javax.swing.JComboBox<>();
+        typeComboBox = new javax.swing.JComboBox<>();
         priceLabel = new javax.swing.JLabel();
         priceField = new javax.swing.JTextField();
         enabledCheck = new javax.swing.JCheckBox();
@@ -106,6 +209,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         searchPanel.add(categoryFilterComboBox, gridBagConstraints);
 
         newButton.setText("Nuevo");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 10;
         gridBagConstraints.gridy = 0;
@@ -188,13 +296,18 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         productDataPanel.add(typeLabel, gridBagConstraints);
 
+        typeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeComboBoxActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 9);
-        productDataPanel.add(typeField, gridBagConstraints);
+        productDataPanel.add(typeComboBox, gridBagConstraints);
 
         priceLabel.setText("Precio:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -261,6 +374,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_searchFieldActionPerformed
 
+    private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeComboBoxActionPerformed
+
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
+        cleanForm();
+    }//GEN-LAST:event_newButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ContentPanel;
@@ -287,7 +408,55 @@ public class ProductsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel searchLabel;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JScrollPane tablePanel;
-    private javax.swing.JComboBox<String> typeField;
+    private javax.swing.JComboBox<String> typeComboBox;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
+
+    private class ProductTableModel extends AbstractTableModel {
+        private List<Product> products = new ArrayList<>();
+        private final String[] columnNames = {"ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"};
+        
+        public void setProducts(List<Product> products) {
+            this.products = products;
+            fireTableDataChanged();
+        }
+        
+        public Product getProductAt(int row) {
+            return products.get(row);
+        }
+        
+        @Override
+        public int getRowCount() {
+            return products.size();
+        }
+        
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+        
+        @Override
+        public Object getValueAt(int row, int column) {
+            Product p = products.get(row);
+            return switch (column) {
+                case 0 -> p.getId();
+                case 1 -> p.getNombre();
+                case 2 -> p.getCategoria();
+                case 3 -> p.getTipo();
+                case 4 -> String.format("$%,d", (int)p.getPrecio()).replace(",", ".");
+                case 5 -> p.isActivo() ? "Sí" : "No";
+                default -> null;
+            };
+        }
+        
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    }
 }
