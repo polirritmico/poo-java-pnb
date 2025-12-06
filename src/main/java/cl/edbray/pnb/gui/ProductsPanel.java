@@ -108,13 +108,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         // TODO: not working since is not populated
         typeComboBox.setSelectedItem(product.getType());
         priceField.setText(String.format("$%,.0f", product.getPrice()));
-        enabledCheck.setEnabled(product.isActive());
+        enabledCheck.setSelected(product.isActive());
 
         deleteButton.setEnabled(true);
     }
 
     private void cleanForm() {
         selectedProduct = null;
+        productsTable.clearSelection();
 
         nameField.setText("");
         categoryComboBox.setSelectedIndex(0);
@@ -331,6 +332,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 9);
         productDataPanel.add(priceField, gridBagConstraints);
 
+        enabledCheck.setEnabled(false);
         enabledCheck.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         enabledCheck.setLabel("Activo");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -367,6 +369,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         buttonsPanel.add(deleteButton);
 
         changeStateButton.setText("Cambiar estado");
+        changeStateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeStateButtonActionPerformed(evt);
+            }
+        });
         buttonsPanel.add(changeStateButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -445,6 +452,13 @@ public class ProductsPanel extends javax.swing.JPanel {
             loadProducts();
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
+       if (selectedProduct == null) { return; }
+
+       selectedProduct.setActive(!selectedProduct.isActive());
+       loadInForm(selectedProduct);
+    }//GEN-LAST:event_changeStateButtonActionPerformed
 
     private boolean validateForm() {
         if (nameField.getText().trim().isEmpty()) {
