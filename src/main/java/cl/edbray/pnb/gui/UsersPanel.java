@@ -5,6 +5,8 @@
 package cl.edbray.pnb.gui;
 
 import cl.edbray.pnb.model.User;
+import cl.edbray.pnb.service.UsersService;
+import cl.edbray.pnb.service.impl.UsersServiceStub;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -20,15 +22,23 @@ public class UsersPanel extends javax.swing.JPanel {
     private User selectedUser;
     private UserTableModel tableModel;
 
+    private final UsersService usersService;
+
     /**
      * Creates new form UsersPanel
      */
     public UsersPanel() {
+        usersService = new UsersServiceStub();
+
         initComponents();
         setupTable();
         setupListeners();
         loadUsers();
         cleanForm();
+    }
+
+    private void loadUsers() {
+        tableModel.setUsers(usersService.listAll());
     }
 
     private void setupTable() {
@@ -92,15 +102,6 @@ public class UsersPanel extends javax.swing.JPanel {
         activeCheck.setSelected(user.isActive());
 
         deleteButton.setEnabled(true);
-    }
-
-    private void loadUsers() {
-        List<User> users = new ArrayList<>();
-        users.add(new User(1, "admin", "admin123", "Administrador del Sistema", "ADMIN", true));
-        users.add(new User(2, "operador", "op123", "Juan Pérez", "OPERADOR", true));
-        users.add(new User(3, "cajero", "caj123", "María González", "OPERADOR", true));
-
-        tableModel.setUsers(users);
     }
 
     private void cleanForm() {
@@ -253,12 +254,12 @@ public class UsersPanel extends javax.swing.JPanel {
 
         if (selectedUser == null) {
             User newUser = new User(0, username, password, fullName, role, active);
-            // TODO: save in service
-            System.out.println("Guardando usuario: " + newUser);
+            usersService.save(newUser);
+
             JOptionPane.showMessageDialog(this, "Usuario guardado exitosamente.");
         } else {
             updateUser(selectedUser, username, password, fullName, role, active);
-            System.out.println("Actualizando usuario: " + selectedUser);
+            usersService.update(selectedUser);
             JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
         }
 
@@ -278,8 +279,7 @@ public class UsersPanel extends javax.swing.JPanel {
             JOptionPane.YES_NO_OPTION
         );
         if (userChoice == JOptionPane.YES_OPTION) {
-            // TODO: delete user
-            System.out.println("Eliminando usuario: " + selectedUser);
+            usersService.delete(selectedUser.getId());
             JOptionPane.showMessageDialog(this, "Usuario eliminado exitosamente.");
             cleanForm();
             loadUsers();
