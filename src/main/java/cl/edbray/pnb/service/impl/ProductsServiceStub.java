@@ -83,7 +83,7 @@ public class ProductsServiceStub implements ProductsService {
     }
 
     @Override
-    public void actualizar(Product product) {
+    public void update(Product product) {
         for (int i=0; i < products.size(); i++) {
             if (products.get(i).getId() == product.getId()) {
                 products.set(i, product);

@@ -56,7 +56,7 @@ public interface ProductsService {
      * Actualizar un producto existente.
      * @param product Producto con cambios
      */
-    void actualizar(Product product);
+    void update(Product product);
 
     /**
      * Elimina un producto por su ID.
