@@ -45,7 +45,7 @@ public class UsersServiceStub implements UsersService {
 
     @Override
     public List<User> searchByUsername(String username) {
-        String usernameLower =username.toLowerCase();
+        String usernameLower = username.toLowerCase();
         return users.stream()
             .filter(u-> u.getUsername().toLowerCase().contains(usernameLower))
             .collect(Collectors.toList());

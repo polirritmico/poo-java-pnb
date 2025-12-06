@@ -309,7 +309,9 @@ public class UsersPanel extends javax.swing.JPanel {
     }
 
     private boolean validateUsername() {
-        if (usernameField.getText().trim().isEmpty()) {
+        String username = usernameField.getText().trim();
+
+        if (username.isEmpty()) {
             JOptionPane.showMessageDialog(
                 this,
                 "El nombre de usuario es obligatorio.",
@@ -318,9 +320,25 @@ public class UsersPanel extends javax.swing.JPanel {
             );
             usernameField.requestFocus();
             return false;
-        } else {
-            return true;
         }
+
+        boolean alreadyExists = usersService.listAll().stream()
+            .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
+
+        if (alreadyExists) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre ingresado ya existe.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            usernameField.requestFocus();
+            return false;
+        }
+
+
+
+        return true;
     }
 
     private boolean validatePassword() {
@@ -333,9 +351,9 @@ public class UsersPanel extends javax.swing.JPanel {
             );
             passwordField.requestFocus();
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     private boolean validateFullName() {
