@@ -93,7 +93,8 @@ public class ProductsPanel extends javax.swing.JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent ev) {
                 if (ev.getClickCount() == 2) {
-                    editRowProduct();
+                    selectProductInTable();
+                    nameField.requestFocus();
                 }
             }
         });
@@ -131,11 +132,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void editRowProduct() {
-        selectProductInTable();
-        nameField.requestFocus();
-    }
-
     private void loadProducts() {
         List<Product> products = productsService.listAll();
         tableModel.setProducts(products);
@@ -144,7 +140,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void loadInForm(Product product) {
         nameField.setText(product.getName());
         categoryComboBox.setSelectedItem(product.getCategory());
-        // TODO: not working since is not populated
         typeComboBox.setSelectedItem(product.getType());
         priceField.setText(String.format("$%,.0f", product.getPrice()));
         enabledCheck.setSelected(product.isActive());
@@ -455,8 +450,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         boolean active = enabledCheck.isSelected();
 
         if (selectedProduct == null) {
-            Product newProduct = new Product(0, name, category, null, price, active);
-            productsService.save(newProduct);
+            productsService.save(new Product(0, name, category, null, price, active));
+
             JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
         } else {
             selectedProduct.setName(name);
@@ -466,6 +461,7 @@ public class ProductsPanel extends javax.swing.JPanel {
             selectedProduct.setActive(active);
 
             productsService.update(selectedProduct);
+
             JOptionPane.showMessageDialog(this, "Producto actualizado exitosamente");
         }
 
@@ -495,7 +491,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
         if (selectedProduct == null) { return; }
 
-        selectedProduct.setActive(!selectedProduct.isActive());
+        productsService.changeState(selectedProduct.getId(), !selectedProduct.isActive());
         loadInForm(selectedProduct);
         cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed
@@ -508,7 +504,6 @@ public class ProductsPanel extends javax.swing.JPanel {
             return false;
         }
 
-        // TODO: Validar categoría
         if (categoryComboBox.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una categoría.",
                 "Validación", JOptionPane.WARNING_MESSAGE);
