@@ -5,13 +5,28 @@
 package cl.edbray.pnb.gui;
 
 import cl.edbray.pnb.model.Product;
+import cl.edbray.pnb.model.Sale;
+import java.awt.Component;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
  * @author eduardo
  */
 public class SalesPanel extends javax.swing.JPanel {
+    private SalesTableModel salesTableModel;
+    private SalesDetailsTableModel detailsTableModel;
+    private DefaultListModel<Product> listModel;
+
     private List<SaleItem> saleItems;
 
     /**
@@ -20,10 +35,79 @@ public class SalesPanel extends javax.swing.JPanel {
     public SalesPanel() {
         initComponents();
         setupComponents();
+        loadProducts();
+        loadDaySales();
+        setupTables();
     }
-    
+
     private void setupComponents() {
         listModel = new DefaultListModel<>();
+        productList.setModel(listModel);
+        productList.setCellRenderer(new ProductListCellRenderer());
+
+        amountSpinner.setModel(new SpinnerNumberModel(1, 1, 99, 1));
+
+        saleItems = new ArrayList<>();
+        detailsTableModel = new SalesDetailsTableModel();
+        detailsTable.setModel(detailsTableModel);
+
+        salesTableModel = new SalesTableModel();
+        historyTable.setModel(salesTableModel);
+
+        updateTotal();
+    }
+
+    private void setupTables() {
+        // TODO: Check if this has any effect
+        historyTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        historyTable.getColumnModel().getColumn(1).setPreferredWidth(70);
+        historyTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        historyTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+        historyTable.getColumnModel().getColumn(4).setPreferredWidth(40);
+    }
+
+    private void loadProducts() {
+        listModel.clear();
+        listModel.addElement(new Product(1, "Espresso", "BEBIDA", "CAFE", 2500, true));
+        listModel.addElement(new Product(2, "Cappuccino", "BEBIDA", "CAFE", 3000, true));
+        listModel.addElement(new Product(3, "Brownie", "SNACK", "POSTRE", 2000, true));
+        listModel.addElement(new Product(4, "15 minutos", "TIEMPO", "ARCADE", 1500, true));
+        listModel.addElement(new Product(5, "30 minutos", "TIEMPO", "ARCADE", 2500, true));
+    }
+
+    private void loadDaySales() {
+        List<Sale> sales = new ArrayList<>();
+        sales.add(new Sale(1, LocalDateTime.now().minusHours(2), 1, "admin", 5000, "ACTIVA"));
+        sales.add(new Sale(2, LocalDateTime.now().minusHours(1), 2, "operador", 7500, "ACTIVA"));
+        sales.add(new Sale(3, LocalDateTime.now().minusMinutes(30), 1, "admin", 3000, "ACTIVA"));
+
+        salesTableModel.setSales(sales);
+
+        double dayTotal = sales.stream()
+            .filter(v -> "ACTIVA".equals(v.getState()))
+            .mapToDouble(Sale::getTotal)
+            .sum();
+
+        dailyTotalField.setText(String.format("Total del día: $%,.0f", dayTotal));
+    }
+
+    private void cleanSale() {
+        saleItems.clear();
+        detailsTableModel.fireTableDataChanged();
+        updateTotal();
+        productList.clearSelection();
+        amountSpinner.setValue(1);
+    }
+
+    private double calculateTotal() {
+        return saleItems.stream()
+            .mapToDouble(SaleItem::getSubTotal)
+            .sum();
+    }
+
+    private void updateTotal() {
+        double total = calculateTotal();
+        totalField.setText(String.format("TOTAL: $%,.0f", total));
     }
 
     /**
@@ -42,10 +126,10 @@ public class SalesPanel extends javax.swing.JPanel {
         searchLabel = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
-        searchTablePanel = new javax.swing.JScrollPane();
-        searchTable = new javax.swing.JTable();
+        searchListPanel = new javax.swing.JScrollPane();
+        productList = new javax.swing.JList<>();
         amountLabel = new javax.swing.JLabel();
-        amountField = new javax.swing.JTextField();
+        amountSpinner = new javax.swing.JSpinner();
         addButton = new javax.swing.JButton();
         detailsPanel = new javax.swing.JPanel();
         detailsPanelTitleLabel = new javax.swing.JLabel();
@@ -106,26 +190,7 @@ public class SalesPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.1;
         searchPanel.add(searchButton, gridBagConstraints);
 
-        searchTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Producto", "Precio"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        searchTablePanel.setViewportView(searchTable);
+        searchListPanel.setViewportView(productList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -134,7 +199,7 @@ public class SalesPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        searchPanel.add(searchTablePanel, gridBagConstraints);
+        searchPanel.add(searchListPanel, gridBagConstraints);
 
         amountLabel.setText("Cantidad:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -145,9 +210,14 @@ public class SalesPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        searchPanel.add(amountField, gridBagConstraints);
+        searchPanel.add(amountSpinner, gridBagConstraints);
 
         addButton.setText("Agregar");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
@@ -208,6 +278,11 @@ public class SalesPanel extends javax.swing.JPanel {
         detailsPanel.add(detailsTablePanel, gridBagConstraints);
 
         removeButton.setText("Quitar Seleccionado");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -226,6 +301,11 @@ public class SalesPanel extends javax.swing.JPanel {
         detailsPanel.add(totalField, gridBagConstraints);
 
         confirmButton.setText("Confirmar Venta");
+        confirmButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -234,6 +314,11 @@ public class SalesPanel extends javax.swing.JPanel {
         detailsPanel.add(confirmButton, gridBagConstraints);
 
         cancelButton.setText("Cancelar");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 8;
@@ -316,11 +401,87 @@ public class SalesPanel extends javax.swing.JPanel {
         add(historyPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        Product selection = productList.getSelectedValue();
+        if (selection == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona un producto",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int amount = (Integer) amountSpinner.getValue();
+        boolean found = false;
+        for (SaleItem item : saleItems) {
+            if (item.getProduct().getId() == selection.getId()) {
+                item.setAmount(item.getAmount() + amount);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            saleItems.add(new SaleItem(selection, amount));
+        }
+
+        detailsTableModel.fireTableDataChanged();
+        updateTotal();
+        amountSpinner.setValue(1);
+
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        int selectedRow = detailsTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            saleItems.remove(selectedRow);
+            detailsTableModel.fireTableDataChanged();
+            updateTotal();
+        }
+    }//GEN-LAST:event_removeButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        if (saleItems.isEmpty()) { return; }
+
+        int answer = JOptionPane.showConfirmDialog(
+            this,
+           "¿Cancelar la venta actual?",
+            "Confirmar",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (answer == JOptionPane.YES_OPTION) {
+             cleanSale();
+        }
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
+        if (saleItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Agrega al menos un producto",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        double total = calculateTotal();
+        int answer = JOptionPane.showConfirmDialog(
+            this,
+            String.format("¿Confirmar venta por $%,.0f", total),
+            "Confirmar Venta",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (answer == JOptionPane.YES_OPTION) {
+            System.out.println("[STUB] Guardando venta. Total: $" + String.format("%,.0f", total));
+            JOptionPane.showMessageDialog(this, "Venta registrada exitosamente");
+        }
+
+        cleanSale();
+        loadDaySales();
+    }//GEN-LAST:event_confirmButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    private javax.swing.JTextField amountField;
     private javax.swing.JLabel amountLabel;
+    private javax.swing.JSpinner amountSpinner;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton confirmButton;
     private javax.swing.JTextField dailyTotalField;
@@ -332,13 +493,13 @@ public class SalesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel historyPanelTitleLabel;
     private javax.swing.JTable historyTable;
     private javax.swing.JScrollPane historyTablePanel;
+    private javax.swing.JList<Product> productList;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel searchLabel;
+    private javax.swing.JScrollPane searchListPanel;
     private javax.swing.JPanel searchPanel;
-    private javax.swing.JTable searchTable;
-    private javax.swing.JScrollPane searchTablePanel;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JPanel titlePanel;
     private javax.swing.JTextField totalField;
@@ -352,10 +513,90 @@ public class SalesPanel extends javax.swing.JPanel {
             this.product = product;
             this.amount = amount;
         }
-        
+
         public Product getProduct() { return product; }
         public int getAmount() { return amount; }
         public void setAmount(int amount) { this.amount = amount; }
-        public double getSubTotal() { return product.getPrecio() * amount; }
+        public double getSubTotal() { return product.getPrice() * amount; }
+    }
+
+    private class SalesDetailsTableModel extends AbstractTableModel {
+        private String[] columnNames = {"Producto", "Cantidad", "Precio Unit.", "Subtotal"};
+
+        @Override
+        public int getRowCount() { return saleItems.size(); }
+
+        @Override
+        public int getColumnCount() { return columnNames.length; }
+
+        @Override
+        public String getColumnName(int column) { return columnNames[column]; }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            SaleItem item = saleItems.get(row);
+            return switch (column) {
+                case 0 -> item.getProduct().getName();
+                case 1 -> item.getAmount();
+                case 2 -> String.format("$%,.0f", item.getProduct().getPrice());
+                case 3 -> String.format("$%,.0f", item.getSubTotal());
+                default -> null;
+            };
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) { return false; }
+    }
+
+    private class SalesTableModel extends AbstractTableModel {
+        private List<Sale> sales = new ArrayList<>();
+        private final String[] columnNames = {"#", "Fecha/Hora", "Usuario", "Total", "Estado"};
+
+        public void setSales(List<Sale> sales) {
+            this.sales = sales;
+            fireTableDataChanged();
+        }
+
+        @Override
+        public int getRowCount() { return sales.size(); }
+
+        @Override
+        public int getColumnCount() { return columnNames.length; }
+
+        @Override
+        public String getColumnName(int column) { return columnNames[column]; }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            Sale s = sales.get(row);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:MM");
+            return switch (column) {
+                case 0 -> s.getId();
+                case 1 -> s.getDateTime().format(formatter);
+                case 2 -> s.getUserName();
+                case 3 -> String.format("$%,.0f", s.getTotal());
+                case 4 -> s.getState();
+                default -> null;
+            };
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) { return false; }
+    }
+
+    private class ProductListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value,
+            int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            if (value instanceof Product) {
+                Product p = (Product) value;
+                setText(String.format("<html><b>%s</b><br><small>$%,.0f</small></html>",
+                    p.getName(), p.getPrice()));
+            }
+
+            return this;
+        };
     }
 }
