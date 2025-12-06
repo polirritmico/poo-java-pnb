@@ -8,19 +8,19 @@ public class User {
     private int id;
     private String username;
     private String password;
-    private String nombreCompleto;
-    private String rol;
-    private boolean activo;
-    
+    private String fullName;
+    private String role;
+    private boolean active;
+
     public User() {}
 
-    public User(int id, String username, String password, String nombreCompleto, String rol, boolean activo) {
+    public User(int id, String username, String password, String fullName, String role, boolean active) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.nombreCompleto = nombreCompleto;
-        this.rol = rol;
-        this.activo = activo;
+        this.fullName = fullName;
+        this.role = role;
+        this.active = active;
     }
 
     public int getId() {
@@ -48,31 +48,31 @@ public class User {
     }
 
     public String getFullName() {
-        return nombreCompleto;
+        return fullName;
     }
 
-    public void setFullName(String nombreCompleto) {
-        this.nombreCompleto = nombreCompleto;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getRole() {
-        return rol;
+        return role;
     }
 
-    public void setRole(String rol) {
-        this.rol = rol;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public boolean isActive() {
-        return activo;
+        return active;
     }
 
-    public void setActive(boolean activo) {
-        this.activo = activo;
+    public void setActive(boolean active) {
+        this.active = active;
     }
-    
+
     @Override
     public String toString() {
-        return "Usuario{id=" + id + ", username='" + username + "', rol='" + rol + "'}";
+        return "Usuario{id=" + id + ", username='" + username + "', rol='" + role + "'}";
     }
 }

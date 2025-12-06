@@ -4,7 +4,7 @@
  */
 package cl.edbray.pnb.gui;
 
-import cl.edbray.pnb.model.Sell;
+import cl.edbray.pnb.model.Sale;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,25 +41,25 @@ public class ReportsPanel extends javax.swing.JPanel {
     private void generateReport() {
         String filter = (String) comboFilter.getSelectedItem();
 
-        List<Sell> sells = getSells(filter);
+        List<Sale> sells = getSells(filter);
         tableModel.setSells(sells);
         
         double total = sells.stream()
-            .filter(s -> "ACTIVA".equals(s.getEstado()))
-            .mapToDouble(Sell::getTotal)
+            .filter(s -> "ACTIVA".equals(s.getState()))
+            .mapToDouble(Sale::getTotal)
             .sum();
         
         labelTotal.setText(String.format("Total: $%,.0f", total));
     }
 
-    private List<Sell> getSells(String filter) {
-        List<Sell> sells = new ArrayList<>();
+    private List<Sale> getSells(String filter) {
+        List<Sale> sells = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
 
-        sells.add(new Sell(1, now.minusHours(3), 1, "admin", 5000, "ACTIVA"));
-        sells.add(new Sell(2, now.minusHours(2), 2, "operador", 7500, "ACTIVA"));
-        sells.add(new Sell(3, now.minusHours(1), 1, "admin", 3000, "ACTIVA"));
-        sells.add(new Sell(4, now.minusMinutes(30), 2, "operador", 4500, "ACTIVA"));
+        sells.add(new Sale(1, now.minusHours(3), 1, "admin", 5000, "ACTIVA"));
+        sells.add(new Sale(2, now.minusHours(2), 2, "operador", 7500, "ACTIVA"));
+        sells.add(new Sale(3, now.minusHours(1), 1, "admin", 3000, "ACTIVA"));
+        sells.add(new Sale(4, now.minusMinutes(30), 2, "operador", 4500, "ACTIVA"));
 
         System.out.println("[STUB] Generating report: " + filter);
         return sells;
@@ -165,10 +165,10 @@ public class ReportsPanel extends javax.swing.JPanel {
 
 
     private class ReportTableModel extends AbstractTableModel {
-        private List<Sell> sells = new ArrayList<>();
+        private List<Sale> sells = new ArrayList<>();
         private final String[] columnNames = {"ID", "Fecha/Hora", "Usuario", "Total", "Estado"};
         
-        public void setSells(List<Sell> sells) {
+        public void setSells(List<Sale> sells) {
             this.sells = sells;
             fireTableDataChanged();
         }
@@ -190,14 +190,14 @@ public class ReportsPanel extends javax.swing.JPanel {
 
         @Override
         public Object getValueAt(int row, int column) {
-            Sell s = sells.get(row);
+            Sale s = sells.get(row);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             return switch (column) {
                 case 0 -> s.getId();
-                case 1 -> s.getFechaHora().format(formatter);
-                case 2 -> s.getUsuarioNombre();
+                case 1 -> s.getDateTime().format(formatter);
+                case 2 -> s.getUserName();
                 case 3 -> String.format("$%,.0f", s.getTotal());
-                case 4 -> s.getEstado();
+                case 4 -> s.getState();
                 default -> null;
             };
         }

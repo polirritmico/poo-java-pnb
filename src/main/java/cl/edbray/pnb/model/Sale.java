@@ -2,23 +2,23 @@ package cl.edbray.pnb.model;
 
 import java.time.LocalDateTime;
 
-public class Sell {
+public class Sale {
     private int id;
-    private LocalDateTime fechaHora;
-    private int usuarioId;
-    private String usuarioNombre;
+    private LocalDateTime dateTime;
+    private int userId;
+    private String userName;
     private double total;
-    private String estado;
-    
-    public Sell() {}
+    private String state;
 
-    public Sell(int id, LocalDateTime fechaHora, int usuarioId, String usuarioNombre, double total, String estado) {
+    public Sale() {}
+
+    public Sale(int id, LocalDateTime dateTime, int userId, String userName, double total, String state) {
         this.id = id;
-        this.fechaHora = fechaHora;
-        this.usuarioId = usuarioId;
-        this.usuarioNombre = usuarioNombre;
+        this.dateTime = dateTime;
+        this.userId = userId;
+        this.userName = userName;
         this.total = total;
-        this.estado = estado;
+        this.state = state;
     }
 
     public int getId() {
@@ -29,28 +29,28 @@ public class Sell {
         this.id = id;
     }
 
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public int getUsuarioId() {
-        return usuarioId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String getUsuarioNombre() {
-        return usuarioNombre;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsuarioNombre(String usuarioNombre) {
-        this.usuarioNombre = usuarioNombre;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public double getTotal() {
@@ -61,14 +61,14 @@ public class Sell {
         this.total = total;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getState() {
+        return state;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setState(String estado) {
+        this.state = estado;
     }
-    
+
     @Override
     public String toString() {
         return "Venta #" + id + " - $" + String.format("%,.0f", total);

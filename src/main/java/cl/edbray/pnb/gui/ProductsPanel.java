@@ -106,11 +106,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void loadInForm(Product product) {
-        nameField.setText(product.getNombre());
-        categoryComboBox.setSelectedItem(product.getCategoria());
-        typeComboBox.setSelectedItem(product.getTipo());
-        priceField.setText(String.format("$%,.0f", product.getPrecio()));
-        enabledCheck.setEnabled(product.isActivo());
+        nameField.setText(product.getName());
+        categoryComboBox.setSelectedItem(product.getCategory());
+        typeComboBox.setSelectedItem(product.getType());
+        priceField.setText(String.format("$%,.0f", product.getPrice()));
+        enabledCheck.setEnabled(product.isActive());
 
         deleteButton.setEnabled(true);
     }
@@ -500,11 +500,11 @@ public class ProductsPanel extends javax.swing.JPanel {
             Product p = products.get(row);
             return switch (column) {
                 case 0 -> p.getId();
-                case 1 -> p.getNombre();
-                case 2 -> p.getCategoria();
-                case 3 -> p.getTipo();
-                case 4 -> String.format("$%,d", (int)p.getPrecio()).replace(",", ".");
-                case 5 -> p.isActivo() ? "Sí" : "No";
+                case 1 -> p.getName();
+                case 2 -> p.getCategory();
+                case 3 -> p.getType();
+                case 4 -> String.format("$%,d", (int)p.getPrice()).replace(",", ".");
+                case 5 -> p.isActive() ? "Sí" : "No";
                 default -> null;
             };
         }

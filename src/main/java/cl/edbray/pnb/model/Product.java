@@ -2,21 +2,21 @@ package cl.edbray.pnb.model;
 
 public class Product {
     private int id;
-    private String nombre;
-    private String categoria;
-    private String tipo;
-    private double precio;
-    private boolean activo;
-    
+    private String name;
+    private String category;
+    private String type;
+    private double price;
+    private boolean active;
+
     public Product() {}
 
-    public Product(int id, String nombre, String categoria, String tipo, double precio, boolean activo) {
+    public Product(int id, String name, String category, String type, double price, boolean active) {
         this.id = id;
-        this.nombre = nombre;
-        this.categoria = categoria;
-        this.tipo = tipo;
-        this.precio = precio;
-        this.activo = activo;
+        this.name = name;
+        this.category = category;
+        this.type = type;
+        this.price = price;
+        this.active = active;
     }
 
     public int getId() {
@@ -27,48 +27,48 @@ public class Product {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getType() {
+        return type;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setActive(boolean active) {
+        this.active = active;
     }
-    
+
     @Override
     public String toString() {
-        return nombre + " - $" + String.format("%,.0f", precio);
+        return name + " - $" + String.format("%,.0f", price);
     }
 }
