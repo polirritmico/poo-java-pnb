@@ -414,24 +414,28 @@ public class ProductsPanel extends javax.swing.JPanel {
 
         String name = nameField.getText().trim();
         String category = categoryComboBox.getSelectedItem().toString();
-        String type = typeComboBox.getSelectedItem().toString();
-        int price = Integer.parseInt(priceField.getText().trim());
+        // TODO: implement
+        // String type = typeComboBox.getSelectedItem().toString();
+        int price = Integer.parseInt(getPriceValue());
         boolean active = enabledCheck.isSelected();
 
         if (selectedProduct == null) {
-            Product newProduct = new Product(0, name, category, type, price, active);
+            Product newProduct = new Product(0, name, category, null, price, active);
             productsService.save(newProduct);
             JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
         } else {
             selectedProduct.setName(name);
             selectedProduct.setCategory(category);
-            selectedProduct.setType(type);
+            // selectedProduct.setType(type);
             selectedProduct.setPrice(price);
             selectedProduct.setActive(active);
 
             productsService.update(selectedProduct);
             JOptionPane.showMessageDialog(this, "Producto actualizado exitosamente");
         }
+
+        cleanForm();
+        loadProducts();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
@@ -477,7 +481,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
         int price;
         try {
-            price = Integer.parseInt(priceField.getText().trim());
+            price = Integer.parseInt(getPriceValue());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.",
                 "Validación", JOptionPane.WARNING_MESSAGE);
@@ -493,6 +497,16 @@ public class ProductsPanel extends javax.swing.JPanel {
         }
 
         return true;
+    }
+
+    private String getPriceValue() {
+        String rawValue = priceField.getText();
+        String cleanValue = rawValue
+            .replace("$", "")
+            .replace(".", "")
+            .replace(",", "")
+            .trim();
+        return cleanValue;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
