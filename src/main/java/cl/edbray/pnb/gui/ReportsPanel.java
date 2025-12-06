@@ -5,6 +5,9 @@
 package cl.edbray.pnb.gui;
 
 import cl.edbray.pnb.model.Sale;
+import cl.edbray.pnb.service.SalesService;
+import cl.edbray.pnb.service.impl.SalesServiceStub;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,12 +19,15 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ReportsPanel extends javax.swing.JPanel {
+    private final SalesService salesService;
     private ReportTableModel tableModel;
 
     /**
      * Creates new form Reports
      */
     public ReportsPanel() {
+        salesService = new SalesServiceStub();
+
         initComponents();
         setupComponents();
     }
@@ -30,39 +36,42 @@ public class ReportsPanel extends javax.swing.JPanel {
         tableModel = new ReportTableModel();
         tableReport.setModel(tableModel);
 
+        setFilters();
+        generateReport();
+    }
+
+    private void setFilters() {
         comboFilter.addItem("Hoy");
         comboFilter.addItem("Ayer");
         comboFilter.addItem("Última semana");
         comboFilter.addItem("Último mes");
-
-        generateReport();
     }
-    
-    private void generateReport() {
-        String filter = (String) comboFilter.getSelectedItem();
 
-        List<Sale> sells = getSells(filter);
-        tableModel.setSells(sells);
-        
-        double total = sells.stream()
+    private LocalDateTime getFirstDateByFilter(int filter) {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        return switch (filter) {
+            case 0 -> today;
+            case 1 -> today.minusDays(1);
+            case 2 -> today.minusWeeks(1);
+            case 3 -> today.minusMonths(1);
+            default -> today;
+        };
+    }
+
+    private void generateReport() {
+        List<Sale> allSales = salesService.listAll();
+        tableModel.setSells(allSales);
+
+        int selectedFilterIndex = comboFilter.getSelectedIndex();
+        LocalDateTime startingDate = getFirstDateByFilter(selectedFilterIndex);
+
+        double total = allSales.stream()
             .filter(s -> "ACTIVA".equals(s.getState()))
+            .filter(s -> !s.getDateTime().isBefore(startingDate))
             .mapToDouble(Sale::getTotal)
             .sum();
-        
+
         labelTotal.setText(String.format("Total: $%,.0f", total));
-    }
-
-    private List<Sale> getSells(String filter) {
-        List<Sale> sells = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
-
-        sells.add(new Sale(1, now.minusHours(3), 1, "admin", 5000, "ACTIVA"));
-        sells.add(new Sale(2, now.minusHours(2), 2, "operador", 7500, "ACTIVA"));
-        sells.add(new Sale(3, now.minusHours(1), 1, "admin", 3000, "ACTIVA"));
-        sells.add(new Sale(4, now.minusMinutes(30), 2, "operador", 4500, "ACTIVA"));
-
-        System.out.println("[STUB] Generating report: " + filter);
-        return sells;
     }
 
     /**
@@ -99,6 +108,11 @@ public class ReportsPanel extends javax.swing.JPanel {
         add(comboFilter, gridBagConstraints);
 
         buttonGenerate.setText("Generar");
+        buttonGenerate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonGenerateActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -154,6 +168,10 @@ public class ReportsPanel extends javax.swing.JPanel {
         add(tablePane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void buttonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonGenerateActionPerformed
+        generateReport();
+    }//GEN-LAST:event_buttonGenerateActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonGenerate;
@@ -167,7 +185,7 @@ public class ReportsPanel extends javax.swing.JPanel {
     private class ReportTableModel extends AbstractTableModel {
         private List<Sale> sells = new ArrayList<>();
         private final String[] columnNames = {"ID", "Fecha/Hora", "Usuario", "Total", "Estado"};
-        
+
         public void setSells(List<Sale> sells) {
             this.sells = sells;
             fireTableDataChanged();
