@@ -16,7 +16,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -58,8 +60,14 @@ public class SalesPanel extends javax.swing.JPanel {
     }
 
     private void customizeTables() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        historyTable.setDefaultRenderer(Object.class, centerRenderer);
         historyTable.getColumnModel().getColumn(0).setMaxWidth(75);
         historyTable.getColumnModel().getColumn(4).setMaxWidth(125);
+
+        detailsTable.setDefaultRenderer(Object.class, centerRenderer);
     }
 
     private void loadProducts() {
@@ -471,9 +479,9 @@ public class SalesPanel extends javax.swing.JPanel {
         if (answer == JOptionPane.YES_OPTION) {
             System.out.println("[STUB] Guardando venta. Total: $" + String.format("%,.0f", total));
             JOptionPane.showMessageDialog(this, "Venta registrada exitosamente");
+            cleanSale();
         }
 
-        cleanSale();
         loadDaySales();
     }//GEN-LAST:event_confirmButtonActionPerformed
 
