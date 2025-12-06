@@ -58,7 +58,7 @@ public class SalesPanel extends javax.swing.JPanel {
         layout.rowHeights = new int[] {0, 10, 0, 10, 0};
         setLayout(layout);
 
-        jPanel1.setLayout(new java.awt.GridLayout());
+        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 16)); // NOI18N
         jLabel1.setText("Registro de Nueva Venta");
@@ -206,9 +206,10 @@ public class SalesPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel3.add(jButton3, gridBagConstraints);
 
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField3.setText("Total: $7.000");
         jTextField3.setEnabled(false);
+        jTextField3.setMinimumSize(new java.awt.Dimension(125, 23));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
