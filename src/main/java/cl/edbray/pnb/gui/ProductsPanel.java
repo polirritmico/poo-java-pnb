@@ -21,13 +21,12 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ProductsPanel extends javax.swing.JPanel {
+    private final ProductsService productsService;
 
     private ProductTableModel tableModel;
     private DefaultComboBoxModel categoriesModel;
     private DefaultComboBoxModel typesModel;
     private Product selectedProduct;
-
-    private ProductsService productsService;
 
     private final Map<String, List<String>> typesByCategory = Map.of(
         "BEBIDA", List.of("CAFE", "GASEOSA"),
@@ -161,6 +160,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         nameField.requestFocus();
     }
 
+    private void filterProducts(String search) {
+        search = search.trim();
+        tableModel.setProducts(productsService.searchByName(search));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -227,6 +231,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         searchPanel.add(searchField, gridBagConstraints);
 
         searchButton.setText("🔍");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -495,6 +504,10 @@ public class ProductsPanel extends javax.swing.JPanel {
         loadInForm(selectedProduct);
         cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        filterProducts(searchField.getText());
+    }//GEN-LAST:event_searchButtonActionPerformed
 
     private boolean validateForm() {
         if (nameField.getText().trim().isEmpty()) {

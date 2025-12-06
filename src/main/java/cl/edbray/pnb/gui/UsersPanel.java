@@ -336,8 +336,6 @@ public class UsersPanel extends javax.swing.JPanel {
             return false;
         }
 
-
-
         return true;
     }
 
