@@ -9,6 +9,8 @@ import cl.edbray.pnb.service.ProductsService;
 import cl.edbray.pnb.service.impl.ProductsServiceStub;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
@@ -21,9 +23,17 @@ import javax.swing.table.AbstractTableModel;
 public class ProductsPanel extends javax.swing.JPanel {
 
     private ProductTableModel tableModel;
+    private DefaultComboBoxModel categoriesModel;
+    private DefaultComboBoxModel typesModel;
     private Product selectedProduct;
 
     private ProductsService productsService;
+
+    private final Map<String, List<String>> typesByCategory = Map.of(
+        "BEBIDA", List.of("CAFE", "GASEOSA"),
+        "SNACK", List.of("POSTRE", "SALADO"),
+        "TIEMPO", List.of("ARCADE")
+    );
 
     /**
      * Creates new form ProductsPanel
@@ -33,6 +43,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
         initComponents();
         setupTable();
+        setupComboBoxes();
         setupListeners();
         loadProducts();
         cleanForm();
@@ -51,6 +62,26 @@ public class ProductsPanel extends javax.swing.JPanel {
         productsTable.getColumnModel().getColumn(5).setPreferredWidth(40);
     }
 
+    private void setupComboBoxes() {
+        categoriesModel = new DefaultComboBoxModel<>();
+        typesModel = new DefaultComboBoxModel<>();
+
+        for (String category : typesByCategory.keySet()) {
+            categoriesModel.addElement(category);
+        }
+
+        typeComboBox.setModel(typesModel);
+        categoryComboBox.setModel(categoriesModel);
+        categoryComboBox.setSelectedIndex(-1);
+
+    }
+
+    private void updateTypes(String category) {
+        typesModel.removeAllElements();
+        typesByCategory.getOrDefault(category, List.of())
+            .forEach(typesModel::addElement);
+    }
+
     private void setupListeners() {
         productsTable.getSelectionModel().addListSelectionListener(ev -> {
             if (!ev.getValueIsAdjusting()) {
@@ -65,6 +96,14 @@ public class ProductsPanel extends javax.swing.JPanel {
                     editRowProduct();
                 }
             }
+        });
+
+        categoryComboBox.addActionListener(e -> {
+            if (categoryComboBox.getSelectedIndex() == -1) {
+                typeComboBox.removeAllItems();
+            }
+            String category = (String) categoryComboBox.getSelectedItem();
+            updateTypes(category);
         });
 
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -287,9 +326,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         productDataPanel.add(categoryLabel, gridBagConstraints);
-
-        categoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BEBIDA", "SNACK", "TIEMPO" }));
-        categoryComboBox.setToolTipText("");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
@@ -414,8 +450,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
         String name = nameField.getText().trim();
         String category = categoryComboBox.getSelectedItem().toString();
-        // TODO: implement
-        // String type = typeComboBox.getSelectedItem().toString();
+        String type = typeComboBox.getSelectedItem().toString();
         int price = Integer.parseInt(getPriceValue());
         boolean active = enabledCheck.isSelected();
 
@@ -426,7 +461,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         } else {
             selectedProduct.setName(name);
             selectedProduct.setCategory(category);
-            // selectedProduct.setType(type);
+            selectedProduct.setType(type);
             selectedProduct.setPrice(price);
             selectedProduct.setActive(active);
 
@@ -458,10 +493,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
-       if (selectedProduct == null) { return; }
+        if (selectedProduct == null) { return; }
 
-       selectedProduct.setActive(!selectedProduct.isActive());
-       loadInForm(selectedProduct);
+        selectedProduct.setActive(!selectedProduct.isActive());
+        loadInForm(selectedProduct);
+        cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed
 
     private boolean validateForm() {
@@ -472,10 +508,18 @@ public class ProductsPanel extends javax.swing.JPanel {
             return false;
         }
 
+        // TODO: Validar categoría
+        if (categoryComboBox.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una categoría.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            categoryComboBox.requestFocus();
+            return false;
+        }
+
         if (priceField.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El precio del producto es obligatorio.",
                 "Validación", JOptionPane.WARNING_MESSAGE);
-            nameField.requestFocus();
+            priceField.requestFocus();
             return false;
         }
 
@@ -485,14 +529,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.",
                 "Validación", JOptionPane.WARNING_MESSAGE);
-            nameField.requestFocus();
+            priceField.requestFocus();
             return false;
         }
 
         if (price < 0) {
             JOptionPane.showMessageDialog(this, "El precio no puede ser negativo.",
                 "Validación", JOptionPane.WARNING_MESSAGE);
-            nameField.requestFocus();
+            priceField.requestFocus();
             return false;
         }
 
