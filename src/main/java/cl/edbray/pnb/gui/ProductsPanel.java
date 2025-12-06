@@ -459,7 +459,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         boolean active = enabledCheck.isSelected();
 
         if (selectedProduct == null) {
-            productsService.save(new Product(0, name, category, null, price, active));
+            productsService.save(new Product(0, name, category, type, price, active));
 
             JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
         } else {
