@@ -5,6 +5,8 @@
 package cl.edbray.pnb.gui;
 
 import cl.edbray.pnb.model.Product;
+import cl.edbray.pnb.service.ProductsService;
+import cl.edbray.pnb.service.impl.ProductsServiceStub;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -21,10 +23,14 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ProductTableModel tableModel;
     private Product selectedProduct;
 
+    private ProductsService productsService;
+
     /**
      * Creates new form ProductsPanel
      */
     public ProductsPanel() {
+        productsService = new ProductsServiceStub();
+
         initComponents();
         setupTable();
         setupListeners();
@@ -92,22 +98,14 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void loadProducts() {
-        // Datos de ejemplo (stub)
-        List<Product> products = new ArrayList<>();
-
-        // "ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"
-        products.add(new Product(1, "Coca-cola", "BEBIDA", "Gaseosa", 1000, true));
-        products.add(new Product(2, "Latte", "BEBIDA", "Café de especialidad", 2500, true));
-        products.add(new Product(3, "Brownie Retro", "SNACK", "Chocolate", 1800, true));
-        products.add(new Product(4, "Papas Pixel", "SNACK", "Saladas", 1500, true));
-        products.add(new Product(5, "Cabina Arcade 30 min", "TIEMPO", "Arriendo", 3000, true));
-
+        List<Product> products = productsService.listAll();
         tableModel.setProducts(products);
     }
 
     private void loadInForm(Product product) {
         nameField.setText(product.getName());
         categoryComboBox.setSelectedItem(product.getCategory());
+        // TODO: not working since is not populated
         typeComboBox.setSelectedItem(product.getType());
         priceField.setText(String.format("$%,.0f", product.getPrice()));
         enabledCheck.setEnabled(product.isActive());
@@ -361,6 +359,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         buttonsPanel.add(cancelButton);
 
         deleteButton.setText("Eliminar");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
         buttonsPanel.add(deleteButton);
 
         changeStateButton.setText("Cambiar estado");
@@ -401,7 +404,47 @@ public class ProductsPanel extends javax.swing.JPanel {
         if (!validateForm()) {
             return;
         }
+
+        String name = nameField.getText().trim();
+        String category = categoryComboBox.getSelectedItem().toString();
+        String type = typeComboBox.getSelectedItem().toString();
+        int price = Integer.parseInt(priceField.getText().trim());
+        boolean active = enabledCheck.isSelected();
+
+        if (selectedProduct == null) {
+            Product newProduct = new Product(0, name, category, type, price, active);
+            productsService.save(newProduct);
+            JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
+        } else {
+            selectedProduct.setName(name);
+            selectedProduct.setCategory(category);
+            selectedProduct.setType(type);
+            selectedProduct.setPrice(price);
+            selectedProduct.setActive(active);
+
+            productsService.update(selectedProduct);
+            JOptionPane.showMessageDialog(this, "Producto actualizado exitosamente");
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        if (selectedProduct == null) {
+            return;
+        }
+
+        int userChoice = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de eliminar el producto '" + selectedProduct.getName() + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION
+        );
+        if (userChoice == JOptionPane.YES_OPTION) {
+            productsService.delete(selectedProduct.getId());
+            JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente.");
+            cleanForm();
+            loadProducts();
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     private boolean validateForm() {
         if (nameField.getText().trim().isEmpty()) {
