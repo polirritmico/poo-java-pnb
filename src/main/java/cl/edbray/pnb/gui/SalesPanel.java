@@ -6,7 +6,12 @@ package cl.edbray.pnb.gui;
 
 import cl.edbray.pnb.model.Product;
 import cl.edbray.pnb.model.Sale;
+import cl.edbray.pnb.service.ProductsService;
+import cl.edbray.pnb.service.SalesService;
+import cl.edbray.pnb.service.impl.ProductsServiceStub;
+import cl.edbray.pnb.service.impl.SalesServiceStub;
 import java.awt.Component;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,9 +30,12 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author eduardo
  */
 public class SalesPanel extends javax.swing.JPanel {
+    private final ProductsService productsService;
+    private final SalesService salesService;
+
     private SalesTableModel salesTableModel;
     private SalesDetailsTableModel detailsTableModel;
-    private DefaultListModel<Product> listModel;
+    private DefaultListModel<Product> productsListModel;
 
     private List<SaleItem> saleItems;
 
@@ -35,6 +43,9 @@ public class SalesPanel extends javax.swing.JPanel {
      * Creates new form salePanel
      */
     public SalesPanel() {
+        productsService = new ProductsServiceStub();
+        salesService = new SalesServiceStub();
+
         initComponents();
         setupComponents();
         loadProducts();
@@ -43,8 +54,8 @@ public class SalesPanel extends javax.swing.JPanel {
     }
 
     private void setupComponents() {
-        listModel = new DefaultListModel<>();
-        productList.setModel(listModel);
+        productsListModel = new DefaultListModel<>();
+        productList.setModel(productsListModel);
         productList.setCellRenderer(new ProductListCellRenderer());
 
         amountSpinner.setModel(new SpinnerNumberModel(1, 1, 99, 1));
@@ -71,28 +82,15 @@ public class SalesPanel extends javax.swing.JPanel {
     }
 
     private void loadProducts() {
-        listModel.clear();
-        listModel.addElement(new Product(1, "Espresso", "BEBIDA", "CAFE", 2500, true));
-        listModel.addElement(new Product(2, "Cappuccino", "BEBIDA", "CAFE", 3000, true));
-        listModel.addElement(new Product(3, "Brownie", "SNACK", "POSTRE", 2000, true));
-        listModel.addElement(new Product(4, "15 minutos", "TIEMPO", "ARCADE", 1500, true));
-        listModel.addElement(new Product(5, "30 minutos", "TIEMPO", "ARCADE", 2500, true));
+        productsListModel.clear();
+        productsService.listAll()
+            .forEach(productsListModel::addElement);
     }
 
     private void loadDaySales() {
-        List<Sale> sales = new ArrayList<>();
-        sales.add(new Sale(1, LocalDateTime.now().minusHours(2), 1, "admin", 5000, "ACTIVA"));
-        sales.add(new Sale(2, LocalDateTime.now().minusHours(1), 2, "operador", 7500, "ACTIVA"));
-        sales.add(new Sale(3, LocalDateTime.now().minusMinutes(30), 1, "admin", 3000, "ACTIVA"));
-
-        salesTableModel.setSales(sales);
-
-        double dayTotal = sales.stream()
-            .filter(v -> "ACTIVA".equals(v.getState()))
-            .mapToDouble(Sale::getTotal)
-            .sum();
-
-        dailyTotalField.setText(String.format("Total del día: $%,.0f", dayTotal));
+        salesTableModel.setSales(salesService.listTodaySales());
+        double total = salesService.calculateTotalByDate(LocalDate.now());
+        dailyTotalField.setText(String.format("Total del día: $%,.0f", total));
     }
 
     private void cleanSale() {
@@ -477,7 +475,14 @@ public class SalesPanel extends javax.swing.JPanel {
         );
 
         if (answer == JOptionPane.YES_OPTION) {
-            System.out.println("[STUB] Guardando venta. Total: $" + String.format("%,.0f", total));
+            // TODO: get user from login
+            int userId = 9999;
+            String userName = "Placeholder";
+            Sale sale = new Sale(
+                0, LocalDateTime.now(), userId, userName, total, "ACTIVA"
+            );
+
+            salesService.save(sale);
             JOptionPane.showMessageDialog(this, "Venta registrada exitosamente");
             cleanSale();
         }
