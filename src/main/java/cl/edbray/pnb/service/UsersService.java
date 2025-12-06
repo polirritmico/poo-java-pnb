@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author eduardo
  */
-public interface UserService {
+public interface UsersService {
 
      /**
      * Lista todos los usuarios del sistema.
