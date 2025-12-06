@@ -37,7 +37,7 @@ public class SalesPanel extends javax.swing.JPanel {
         setupComponents();
         loadProducts();
         loadDaySales();
-        setupTables();
+        customizeTables();
     }
 
     private void setupComponents() {
@@ -57,13 +57,9 @@ public class SalesPanel extends javax.swing.JPanel {
         updateTotal();
     }
 
-    private void setupTables() {
-        // TODO: Check if this has any effect
-        historyTable.getColumnModel().getColumn(0).setPreferredWidth(25);
-        historyTable.getColumnModel().getColumn(1).setPreferredWidth(70);
-        historyTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-        historyTable.getColumnModel().getColumn(3).setPreferredWidth(80);
-        historyTable.getColumnModel().getColumn(4).setPreferredWidth(40);
+    private void customizeTables() {
+        historyTable.getColumnModel().getColumn(0).setMaxWidth(75);
+        historyTable.getColumnModel().getColumn(4).setMaxWidth(125);
     }
 
     private void loadProducts() {
@@ -363,16 +359,20 @@ public class SalesPanel extends javax.swing.JPanel {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
+        historyTable.getTableHeader().setReorderingAllowed(false);
         historyTablePanel.setViewportView(historyTable);
-        if (historyTable.getColumnModel().getColumnCount() > 0) {
-            historyTable.getColumnModel().getColumn(0).setPreferredWidth(50);
-            historyTable.getColumnModel().getColumn(0).setMaxWidth(75);
-        }
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
