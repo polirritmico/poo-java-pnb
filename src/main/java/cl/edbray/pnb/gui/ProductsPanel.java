@@ -7,6 +7,7 @@ package cl.edbray.pnb.gui;
 import cl.edbray.pnb.model.Product;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.AbstractTableModel;
@@ -16,6 +17,7 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ProductsPanel extends javax.swing.JPanel {
+
     private ProductTableModel tableModel;
     private Product selectedProduct;
 
@@ -27,13 +29,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         setupTable();
         setupListeners();
         loadProducts();
+        cleanForm();
     }
-    
+
     private void setupTable() {
         tableModel = new ProductTableModel();
         productsTable.setModel(tableModel);
         productsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         productsTable.getColumnModel().getColumn(0).setPreferredWidth(40);
         productsTable.getColumnModel().getColumn(1).setPreferredWidth(200);
         productsTable.getColumnModel().getColumn(2).setPreferredWidth(100);
@@ -41,31 +44,23 @@ public class ProductsPanel extends javax.swing.JPanel {
         productsTable.getColumnModel().getColumn(4).setPreferredWidth(60);
         productsTable.getColumnModel().getColumn(5).setPreferredWidth(40);
     }
-    
+
     private void setupListeners() {
         productsTable.getSelectionModel().addListSelectionListener(ev -> {
             if (!ev.getValueIsAdjusting()) {
-                int selectedRow = productsTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    selectedProduct = tableModel.getProductAt(selectedRow);
-                    loadToForm(selectedProduct);
-                }
+                selectProductInTable();
             }
         });
-        
+
         productsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent ev) {
                 if (ev.getClickCount() == 2) {
-                    int row = productsTable.getSelectedRow();
-                    if (row >= 0) {
-                        selectedProduct = tableModel.getProductAt(row);
-                        loadToForm(selectedProduct);
-                        nameField.requestFocus();
-                    }
+                    editRowProduct();
                 }
             }
         });
-        
+
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { filter(); }
@@ -75,48 +70,61 @@ public class ProductsPanel extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) { }
-            
+
             private void filter() {
                 String text = searchField.getText();
                 // TODO
             }
         });
     }
-    
+
+    private void selectProductInTable() {
+        int selectedRow = productsTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            selectedProduct = tableModel.getProductAt(selectedRow);
+            loadInForm(selectedProduct);
+        }
+    }
+
+    private void editRowProduct() {
+        selectProductInTable();
+        nameField.requestFocus();
+    }
+
     private void loadProducts() {
         // Datos de ejemplo (stub)
         List<Product> products = new ArrayList<>();
 
         // "ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"
-        products.add(new Product(1, "Coca-cola", "Bebida", "Gaseosa", 1000, true));
-        products.add(new Product(2, "Latte", "Bebida", "Café de especialidad", 2500, true));
-        products.add(new Product(3, "Brownie Retro", "Snack", "Chocolate", 1800, true));
-        products.add(new Product(4, "Papas Pixel", "Snack", "Saladas", 1500, true));
-        products.add(new Product(5, "Cabina Arcade 30 min", "Tiempo", "Arriendo", 3000, true));
+        products.add(new Product(1, "Coca-cola", "BEBIDA", "Gaseosa", 1000, true));
+        products.add(new Product(2, "Latte", "BEBIDA", "Café de especialidad", 2500, true));
+        products.add(new Product(3, "Brownie Retro", "SNACK", "Chocolate", 1800, true));
+        products.add(new Product(4, "Papas Pixel", "SNACK", "Saladas", 1500, true));
+        products.add(new Product(5, "Cabina Arcade 30 min", "TIEMPO", "Arriendo", 3000, true));
 
         tableModel.setProducts(products);
     }
-    
-    private void loadToForm(Product product) {
+
+    private void loadInForm(Product product) {
         nameField.setText(product.getNombre());
         categoryComboBox.setSelectedItem(product.getCategoria());
         typeComboBox.setSelectedItem(product.getTipo());
         priceField.setText(String.format("$%,.0f", product.getPrecio()));
         enabledCheck.setEnabled(product.isActivo());
-        
+
         deleteButton.setEnabled(true);
     }
-    
+
     private void cleanForm() {
         selectedProduct = null;
-        
+
         nameField.setText("");
         categoryComboBox.setSelectedIndex(0);
-        typeComboBox.setSelectedIndex(0);
+        //typeComboBox.setSelectedIndex(0);
         priceField.setText("0");
         enabledCheck.setEnabled(false);
         deleteButton.setEnabled(false);
-        
+
         nameField.requestFocus();
     }
 
@@ -281,6 +289,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         productDataPanel.add(categoryLabel, gridBagConstraints);
 
+        categoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BEBIDA", "SNACK", "TIEMPO" }));
+        categoryComboBox.setToolTipText("");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
@@ -340,6 +350,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         buttonsPanel.setLayout(new java.awt.GridLayout(2, 2, 10, 5));
 
         saveButton.setText("Guardar");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
         buttonsPanel.add(saveButton);
 
         cancelButton.setText("Cancelar");
@@ -382,6 +397,46 @@ public class ProductsPanel extends javax.swing.JPanel {
         cleanForm();
     }//GEN-LAST:event_newButtonActionPerformed
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        if (!validateForm()) {
+            return;
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private boolean validateForm() {
+        if (nameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre del producto es obligatorio.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            nameField.requestFocus();
+            return false;
+        }
+
+        if (priceField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El precio del producto es obligatorio.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            nameField.requestFocus();
+            return false;
+        }
+
+        int price;
+        try {
+            price = Integer.parseInt(priceField.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            nameField.requestFocus();
+            return false;
+        }
+
+        if (price < 0) {
+            JOptionPane.showMessageDialog(this, "El precio no puede ser negativo.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            nameField.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ContentPanel;
@@ -415,31 +470,31 @@ public class ProductsPanel extends javax.swing.JPanel {
     private class ProductTableModel extends AbstractTableModel {
         private List<Product> products = new ArrayList<>();
         private final String[] columnNames = {"ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"};
-        
+
         public void setProducts(List<Product> products) {
             this.products = products;
             fireTableDataChanged();
         }
-        
+
         public Product getProductAt(int row) {
             return products.get(row);
         }
-        
+
         @Override
         public int getRowCount() {
             return products.size();
         }
-        
+
         @Override
         public int getColumnCount() {
             return columnNames.length;
         }
-        
+
         @Override
         public String getColumnName(int column) {
             return columnNames[column];
         }
-        
+
         @Override
         public Object getValueAt(int row, int column) {
             Product p = products.get(row);
@@ -453,7 +508,7 @@ public class ProductsPanel extends javax.swing.JPanel {
                 default -> null;
             };
         }
-        
+
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
