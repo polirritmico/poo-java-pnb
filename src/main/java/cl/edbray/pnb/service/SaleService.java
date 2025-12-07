@@ -67,7 +67,7 @@ public class SaleService {
         return repository.calculateTodayTotal();
     }
 
-    public double calculateTtalByRange(LocalDateTime from, LocalDateTime until) {
+    public double calculateTotalByRange(LocalDateTime from, LocalDateTime until) {
         return repository.calculateTotalByDateRange(from, until);
     }
 }
