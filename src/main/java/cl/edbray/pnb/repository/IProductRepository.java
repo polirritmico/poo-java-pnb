@@ -53,16 +53,20 @@ public interface IProductRepository {
 
     /**
      * Actualiza un producto existente
+     * @param product El producto a actualizar
      */
     void update(Product product);
 
     /**
      * Elimina un producto por ID
+     * @param id La id del producto a eliminar
      */
     void delete(int id);
 
     /**
      * Cambia el estado activo/inactivo de un producto
+     * @param id Id del producto a actualizar
+     * @param state el nuevo valor
      */
-    void setState(int id, boolean state);
+    void changeState(int id, boolean state);
 }
