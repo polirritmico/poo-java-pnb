@@ -102,7 +102,7 @@ public class ProductRepositoryMock implements IProductRepository {
     }
 
     @Override
-    public void setState(int id, boolean state) {
+    public void changeState(int id, boolean state) {
         Product storedProduct = searchById(id);
         if (storedProduct != null) {
             storedProduct.setActive(state);
