@@ -21,7 +21,7 @@ import javax.swing.UIManager;
  * @author eduardo
  */
 public class MainFrame extends javax.swing.JFrame {
-    private User currentUser;
+    private final User currentUser;
     private CardLayout cardLayout;
 
     //public MainFrame(User user) {
@@ -30,9 +30,37 @@ public class MainFrame extends javax.swing.JFrame {
 
         initComponents();
         setTimerHandler();
-        setupNavigation();
+        setupNavigation(currentUser);
         applyCustomTheme();
         setupWindow();
+    }
+
+    private void setTimerHandler() {
+        Timer timer = new Timer(1000, e-> {
+            statusTime.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
+        });
+        timer.start();
+    }
+
+    private void setupNavigation(User user) {
+        cardLayout = new CardLayout();
+        mainPanel.setLayout(cardLayout);
+
+        mainPanel.add(createHomePanel(), "HOME");
+        mainPanel.add(new UsersPanel(), "USERS");
+        mainPanel.add(new ProductsPanel(), "PRODUCTS");
+        mainPanel.add(new EventsPanel(), "EVENTS");
+        mainPanel.add(new SalesPanel(user), "SALES");
+        mainPanel.add(new ReportsPanel(), "REPORTS");
+        showView("HOME");
+    }
+
+    private void applyCustomTheme() {
+        statusBar.setBackground(UIManager.getColor("MenuBar.background"));
+        statusBar.setForeground(UIManager.getColor("MenuBar.foreground"));
+        statusBar.setBorder(UIManager.getBorder("MenuBar.border"));
     }
 
     private void setupWindow() {
@@ -43,13 +71,27 @@ public class MainFrame extends javax.swing.JFrame {
         statusRole.setText(currentUser.getRole());
     }
 
-    private void setTimerHandler() {
-        Timer timer = new Timer(1000, e-> {
-            statusTime.setText(
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-            );
-        });
-        timer.start();
+    private void showView(String name) {
+        cardLayout.show(mainPanel, name);
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    private JPanel createHomePanel() {
+        JPanel homePanel = new JPanel(new GridBagLayout());
+        JLabel content = new JLabel(
+            "<html><center>" +
+            "<h1>☕ Pixel & Beans</h1>" +
+            "<p>Sistema de Gestión para <b>Café Arcade</b>.</p>" +
+            "<p style='margin-top: 20px;'>Selecciona una opción del menú superior para comenzar.</p>" +
+            "</center></html>"
+        );
+
+        content.setHorizontalAlignment(SwingConstants.CENTER);
+        homePanel.add(content);
+        return homePanel;
     }
 
     /**
@@ -298,44 +340,6 @@ public class MainFrame extends javax.swing.JFrame {
         "En desarrollo",
         JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_menuEntryTopSellersActionPerformed
-
-    private void applyCustomTheme() {
-        statusBar.setBackground(UIManager.getColor("MenuBar.background"));
-        statusBar.setForeground(UIManager.getColor("MenuBar.foreground"));
-        statusBar.setBorder(UIManager.getBorder("MenuBar.border"));
-    }
-
-    private void setupNavigation() {
-        cardLayout = new CardLayout();
-        mainPanel.setLayout(cardLayout);
-
-        mainPanel.add(createHomePanel(), "HOME");
-        mainPanel.add(new UsersPanel(), "USERS");
-        mainPanel.add(new ProductsPanel(), "PRODUCTS");
-        mainPanel.add(new EventsPanel(), "EVENTS");
-        mainPanel.add(new SalesPanel(), "SALES");
-        mainPanel.add(new ReportsPanel(), "REPORTS");
-        showView("HOME");
-    }
-
-    private void showView(String name) {
-        cardLayout.show(mainPanel, name);
-    }
-
-    private JPanel createHomePanel() {
-        JPanel homePanel = new JPanel(new GridBagLayout());
-        JLabel content = new JLabel(
-            "<html><center>" +
-            "<h1>☕ Pixel & Beans</h1>" +
-            "<p>Sistema de Gestión para <b>Café Arcade</b>.</p>" +
-            "<p style='margin-top: 20px;'>Selecciona una opción del menú superior para comenzar.</p>" +
-            "</center></html>"
-        );
-
-        content.setHorizontalAlignment(SwingConstants.CENTER);
-        homePanel.add(content);
-        return homePanel;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler leftSeparator;
