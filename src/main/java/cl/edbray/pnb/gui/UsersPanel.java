@@ -39,6 +39,18 @@ public class UsersPanel extends javax.swing.JPanel {
         cleanForm();
     }
 
+    private void setupTable() {
+        tableModel = new UserTableModel();
+        usersTable.setModel(tableModel);
+        usersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        usersTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        usersTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+        usersTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+        usersTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+        usersTable.getColumnModel().getColumn(4).setPreferredWidth(60);
+    }
+
     private void loadUsers() {
         try {
             List<User> users = controller.listAll();
@@ -53,16 +65,15 @@ public class UsersPanel extends javax.swing.JPanel {
         }
     }
 
-    private void setupTable() {
-        tableModel = new UserTableModel();
-        usersTable.setModel(tableModel);
-        usersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        usersTable.getColumnModel().getColumn(0).setPreferredWidth(50);
-        usersTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-        usersTable.getColumnModel().getColumn(2).setPreferredWidth(200);
-        usersTable.getColumnModel().getColumn(3).setPreferredWidth(80);
-        usersTable.getColumnModel().getColumn(4).setPreferredWidth(60);
+    private void cleanForm() {
+        selectedUser = null;
+        usernameField.setText("");
+        passwordField.setText("");
+        fullNameField.setText("");
+        roleComboBox.setSelectedIndex(0);
+        activeCheck.setSelected(true);
+        deleteButton.setEnabled(false);
+        usernameField.requestFocus();
     }
 
     private void setupListeners() {
@@ -116,17 +127,6 @@ public class UsersPanel extends javax.swing.JPanel {
         deleteButton.setEnabled(true);
     }
 
-    private void cleanForm() {
-        selectedUser = null;
-        usernameField.setText("");
-        passwordField.setText("");
-        fullNameField.setText("");
-        roleComboBox.setSelectedIndex(0);
-        activeCheck.setSelected(true);
-        deleteButton.setEnabled(false);
-        usernameField.requestFocus();
-    }
-
     private void updateUser(
         User user,
         String username,
@@ -142,26 +142,23 @@ public class UsersPanel extends javax.swing.JPanel {
         user.setActive(active);
     }
 
-    private boolean validateForm() {
-        if (!validateUsername()) { return false; }
+    private boolean validateNewUserForm() {
+        if (!validateUsernameLength()) { return false; }
+        if (!validateUsernameIsAvaliable()) { return false; }
         if (!validatePassword()) { return false; }
         if (!validateFullName()) { return false; }
         return true;
     }
 
-    private boolean validateUsername() {
-        String username = usernameField.getText().trim();
+    private boolean validateEditUserForm() {
+        if (!validateUsernameLength()) { return false; }
+        if (!validatePassword()) { return false; }
+        if (!validateFullName()) { return false; }
+        return true;
+    }
 
-        if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "El nombre de usuario es obligatorio.",
-                "Validación",
-                JOptionPane.WARNING_MESSAGE
-            );
-            usernameField.requestFocus();
-            return false;
-        }
+    private boolean validateUsernameIsAvaliable() {
+        String username = usernameField.getText().trim();
 
         boolean alreadyExists = controller.listAll().stream()
             .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
@@ -170,6 +167,23 @@ public class UsersPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(
                 this,
                 "El nombre ingresado ya existe.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            usernameField.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateUsernameLength() {
+        String username = usernameField.getText().trim();
+
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre de usuario es obligatorio.",
                 "Validación",
                 JOptionPane.WARNING_MESSAGE
             );
@@ -337,12 +351,9 @@ public class UsersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO: must determine whether to use validations for new users (e.g.
-        // duplicate usernames) or for updating existing users.
-
-        if (!validateForm()) {
-            return;
-        }
+        boolean newUserMode = selectedUser == null;
+        if (newUserMode && !validateNewUserForm()) { return; }
+        if (!newUserMode && !validateEditUserForm()) { return; }
 
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -351,7 +362,7 @@ public class UsersPanel extends javax.swing.JPanel {
         boolean active = activeCheck.isSelected();
 
         try {
-            if (selectedUser == null) {
+            if (newUserMode) {
                 controller.create(username, password, fullName, role);
                 JOptionPane.showMessageDialog(
                     this,
