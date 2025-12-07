@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author eduardo
  */
 public class LoginFrame extends javax.swing.JFrame {
-    private LoginController controller;
+    private final LoginController controller;
 
     /**
      * Creates new form LoginFrame
@@ -27,8 +27,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void startMain(User user) {
-        MainFrame main = new MainFrame(user);
-        main.setVisible(true);
+        new MainFrame(user).setVisible(true);
         this.dispose();
     }
 
@@ -234,7 +233,7 @@ public class LoginFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(
                 this,
                 "¡Bienvenido " + user.getFullName() + "!",
-                "Loin exitoso",
+                "Login exitoso",
                 JOptionPane.INFORMATION_MESSAGE
             );
 
