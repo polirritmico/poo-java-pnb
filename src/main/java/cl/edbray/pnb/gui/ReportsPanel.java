@@ -54,6 +54,13 @@ public class ReportsPanel extends javax.swing.JPanel {
     }
 
     private void setupListeners() {
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent ev) {
+                updateReport();
+            }
+        });
+
         comboFilter.addActionListener(e -> {
             updateReport();
         });

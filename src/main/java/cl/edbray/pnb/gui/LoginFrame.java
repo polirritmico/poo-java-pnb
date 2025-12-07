@@ -127,11 +127,6 @@ public class LoginFrame extends javax.swing.JFrame {
         usernameField.setCaretColor(new java.awt.Color(244, 244, 244));
         usernameField.setMargin(new java.awt.Insets(2, 10, 2, 10));
         usernameField.setVerifyInputWhenFocusTarget(false);
-        usernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameFieldActionPerformed(evt);
-            }
-        });
         usernamePanel.add(usernameField);
 
         fieldsContainer.add(usernamePanel);
