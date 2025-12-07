@@ -14,6 +14,7 @@ import java.util.List;
  * @author eduardo
  */
 public class SaleController {
+
     private final SaleService service;
 
     public SaleController(SaleService service) {

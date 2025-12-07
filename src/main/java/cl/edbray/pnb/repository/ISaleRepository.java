@@ -10,12 +10,14 @@ import java.util.List;
 
 /**
  * Contrato de operaciones para acceso a datos de Venta
+ *
  * @author eduardo
  */
 public interface ISaleRepository {
 
     /**
      * Busca una venta por su ID.
+     *
      * @param id ID de la venta
      * @return Venta encontrada o null
      */
@@ -23,12 +25,14 @@ public interface ISaleRepository {
 
     /**
      * Lista todas las ventas.
+     *
      * @return Lista de todas las ventas
      */
     List<Sale> listAll();
 
     /**
      * Lista ventas dentro de un rango de fechas.
+     *
      * @param from Fecha y hora de inicio (inclusive)
      * @param until Fecha y hora de fin (inclusive)
      * @return Lista de ventas en el rango especificado
@@ -37,12 +41,14 @@ public interface ISaleRepository {
 
     /**
      * Lista ventas del día actual.
+     *
      * @return Lista de ventas realizadas hoy
      */
     List<Sale> listToday();
 
     /**
      * Lista ventas realizadas por un usuario específico.
+     *
      * @param userId ID del usuario
      * @return Lista de ventas del usuario
      */
@@ -50,6 +56,7 @@ public interface ISaleRepository {
 
     /**
      * Guarda una nueva venta.
+     *
      * @param sale Venta a guardar
      * @return ID asignado a la venta
      */
@@ -57,12 +64,14 @@ public interface ISaleRepository {
 
     /**
      * Anula una venta (cambia estado a ANULADA).
+     *
      * @param id ID de la venta
      */
     void cancel(int id);
 
     /**
      * Calcula el total de ventas activas dentro de un rango de fechas.
+     *
      * @param from Fecha y hora de inicio (inclusive)
      * @param until Fecha y hora de fin (inclusive)
      * @return Total de ventas en pesos
@@ -71,6 +80,7 @@ public interface ISaleRepository {
 
     /**
      * Calcula el total de ventas activas del día actual.
+     *
      * @return Total de ventas de hoy en pesos
      */
     double calculateTodayTotal();

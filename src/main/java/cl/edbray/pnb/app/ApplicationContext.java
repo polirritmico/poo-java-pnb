@@ -20,12 +20,15 @@ import cl.edbray.pnb.service.UserService;
 
 /**
  * Contenedor de Inversión de Control (IoC) manual Responsable de:
+ *
  * - Crear todas las instancias de repositorios, servicios y controladores
  * - Inyectar dependencias mediante constructores
  * - Proporcionar acceso centralizado a los componentes.
+ *
  * @author eduardo
  */
 public class ApplicationContext {
+
     private static ApplicationContext instance;
 
     private IUserRepository userRepository;

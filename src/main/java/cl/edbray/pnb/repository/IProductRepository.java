@@ -9,29 +9,35 @@ import java.util.List;
 
 /**
  * Contrato de operaciones para acceso a datos de producto
+ *
  * @author eduardo
  */
 public interface IProductRepository {
+
     /**
      * Busca un producto por su ID
+     *
      * @param id Id a buscar
      */
     Product searchById(int id);
 
     /**
      * Lista todos los productos
+     *
      * @return La lista con todos los productos
      */
     List<Product> listAll();
 
     /**
      * Lista productos activos solamente
+     *
      * @return lista con los productos activos
      */
     List<Product> listActive();
 
     /**
      * Lista productos por categoría
+     *
      * @param category BEBIDA, SNACK, TIEMPO
      * @return lista con los productos de la categoria ingresada
      */
@@ -39,6 +45,7 @@ public interface IProductRepository {
 
     /**
      * Busca productos por nombre (búsqueda parcial)
+     *
      * @param name Nombre parcial a buscar
      * @return lista de los productos coincidentes
      */
@@ -46,6 +53,7 @@ public interface IProductRepository {
 
     /**
      * Guarda un nuevo producto
+     *
      * @param product Producto a guardar
      * @return El id asignado del producto agregado
      */
@@ -53,18 +61,21 @@ public interface IProductRepository {
 
     /**
      * Actualiza un producto existente
+     *
      * @param product El producto a actualizar
      */
     void update(Product product);
 
     /**
      * Elimina un producto por ID
+     *
      * @param id La id del producto a eliminar
      */
     void delete(int id);
 
     /**
      * Cambia el estado activo/inactivo de un producto
+     *
      * @param id Id del producto a actualizar
      * @param state el nuevo valor
      */

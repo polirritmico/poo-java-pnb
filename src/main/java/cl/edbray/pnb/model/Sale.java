@@ -3,6 +3,7 @@ package cl.edbray.pnb.model;
 import java.time.LocalDateTime;
 
 public class Sale {
+
     private int id;
     private LocalDateTime dateTime;
     private int userId;
@@ -10,7 +11,8 @@ public class Sale {
     private double total;
     private String state;
 
-    public Sale() {}
+    public Sale() {
+    }
 
     public Sale(int id, LocalDateTime dateTime, int userId, String userName, double total, String state) {
         this.id = id;

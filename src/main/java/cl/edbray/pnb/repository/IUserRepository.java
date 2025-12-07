@@ -9,11 +9,14 @@ import java.util.List;
 
 /**
  * Contrato de operaciones para acceso a datos de Usuario
+ *
  * @author eduardo
  */
 public interface IUserRepository {
+
     /**
      * Busca un usuario por su ID
+     *
      * @param id ID del usuario
      * @return Usuario encontrado o null
      */
@@ -21,6 +24,7 @@ public interface IUserRepository {
 
     /**
      * Busca un usuario por su username
+     *
      * @param username Nombre de usuario a buscar
      * @return Usuario encontrado o null
      */
@@ -28,12 +32,14 @@ public interface IUserRepository {
 
     /**
      * Lista todos los usuarios
+     *
      * @return Lista de todos los usuarios
      */
     List<User> listAll();
 
     /**
      * Lista usuarios por rol
+     *
      * @param role Rol a filtrar (ADMIN, OPERADOR)
      * @return Lista de usuarios con ese rol
      */
@@ -41,6 +47,7 @@ public interface IUserRepository {
 
     /**
      * Guarda un nuevo usuario
+     *
      * @param user Usuario a guardar
      * @return ID asignado
      */
@@ -48,18 +55,21 @@ public interface IUserRepository {
 
     /**
      * Actualiza un usuario existente
+     *
      * @param user Usuario con datos actualizados
      */
     void update(User user);
 
     /**
      * Elimina un usuario por ID
+     *
      * @param id ID del usuario a eliminar
      */
     void delete(int id);
 
     /**
      * Verifica si existe un username
+     *
      * @param username Username a verificar
      * @return true si existe, false si no
      */
@@ -67,6 +77,7 @@ public interface IUserRepository {
 
     /**
      * Cuenta usuarios activos por rol
+     *
      * @param role Rol a contar
      * @return Cantidad de usuarios activos con ese rol
      */

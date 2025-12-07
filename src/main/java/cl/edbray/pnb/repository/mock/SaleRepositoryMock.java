@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * @author eduardo
  */
 public class SaleRepositoryMock implements ISaleRepository {
+
     private List<Sale> sales;
     private int nextId;
 
@@ -90,10 +91,10 @@ public class SaleRepositoryMock implements ISaleRepository {
 
     @Override
     public void cancel(int id) {
-       Sale sale = searchById(id);
-       if (sale != null) {
-           sale.setState("ANULADA");
-       }
+        Sale sale = searchById(id);
+        if (sale != null) {
+            sale.setState("ANULADA");
+        }
     }
 
     @Override

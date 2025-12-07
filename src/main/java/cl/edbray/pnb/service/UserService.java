@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  * @author eduardo
  */
 public class UserService {
+
     private final IUserRepository repository;
 
     public UserService(IUserRepository repository) {
@@ -124,8 +125,8 @@ public class UserService {
 
         String searchLower = search.toLowerCase();
         return repository.listAll().stream()
-            .filter(u -> u.getUsername().toLowerCase().contains(searchLower) ||
-                u.getFullName().toLowerCase().contains(searchLower))
+            .filter(u -> u.getUsername().toLowerCase().contains(searchLower)
+            || u.getFullName().toLowerCase().contains(searchLower))
             .collect(Collectors.toList());
     }
 

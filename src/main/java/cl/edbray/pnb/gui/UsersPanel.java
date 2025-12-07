@@ -19,6 +19,7 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class UsersPanel extends javax.swing.JPanel {
+
     private final UserController controller;
 
     private User selectedUser;
@@ -91,9 +92,19 @@ public class UsersPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent ev) { filterUsers(); }
-            @Override public void removeUpdate(DocumentEvent ev) { filterUsers(); }
-            @Override public void changedUpdate(DocumentEvent ev) { }
+            @Override
+            public void insertUpdate(DocumentEvent ev) {
+                filterUsers();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent ev) {
+                filterUsers();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent ev) {
+            }
 
             private void filterUsers() {
                 String search = searchField.getText().trim();
@@ -131,8 +142,7 @@ public class UsersPanel extends javax.swing.JPanel {
         String password,
         String fullName,
         String role,
-        boolean active)
-    {
+        boolean active) {
         user.setUsername(username);
         user.setPassword(password);
         user.setFullName(fullName);
@@ -141,17 +151,31 @@ public class UsersPanel extends javax.swing.JPanel {
     }
 
     private boolean validateNewUserForm() {
-        if (!validateUsernameLength()) { return false; }
-        if (!validateUsernameIsAvaliable()) { return false; }
-        if (!validatePassword()) { return false; }
-        if (!validateFullName()) { return false; }
+        if (!validateUsernameLength()) {
+            return false;
+        }
+        if (!validateUsernameIsAvaliable()) {
+            return false;
+        }
+        if (!validatePassword()) {
+            return false;
+        }
+        if (!validateFullName()) {
+            return false;
+        }
         return true;
     }
 
     private boolean validateEditUserForm() {
-        if (!validateUsernameLength()) { return false; }
-        if (!validatePassword()) { return false; }
-        if (!validateFullName()) { return false; }
+        if (!validateUsernameLength()) {
+            return false;
+        }
+        if (!validatePassword()) {
+            return false;
+        }
+        if (!validateFullName()) {
+            return false;
+        }
         return true;
     }
 
@@ -359,8 +383,12 @@ public class UsersPanel extends javax.swing.JPanel {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         boolean newUserMode = selectedUser == null;
-        if (newUserMode && !validateNewUserForm()) { return; }
-        if (!newUserMode && !validateEditUserForm()) { return; }
+        if (newUserMode && !validateNewUserForm()) {
+            return;
+        }
+        if (!newUserMode && !validateEditUserForm()) {
+            return;
+        }
 
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -430,14 +458,14 @@ public class UsersPanel extends javax.swing.JPanel {
                 cleanForm();
                 loadUsers();
 
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(
-                this,
-                e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
@@ -464,8 +492,9 @@ public class UsersPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class UserTableModel extends AbstractTableModel {
+
         private List<User> users = new ArrayList<>();
-        private String[] columnNames = { "ID", "Usuario", "Nombre completo", "Rol", "Activo" };
+        private String[] columnNames = {"ID", "Usuario", "Nombre completo", "Rol", "Activo"};
 
         public void setUsers(List<User> users) {
             this.users = users;
@@ -500,12 +529,18 @@ public class UsersPanel extends javax.swing.JPanel {
         public Object getValueAt(int row, int column) {
             User user = users.get(row);
             return switch (column) {
-                case 0 -> user.getId();
-                case 1 -> user.getUsername();
-                case 2 -> user.getFullName();
-                case 3 -> user.getRole();
-                case 4 -> user.isActive() ? "Sí" : "No";
-                default -> null;
+                case 0 ->
+                    user.getId();
+                case 1 ->
+                    user.getUsername();
+                case 2 ->
+                    user.getFullName();
+                case 3 ->
+                    user.getRole();
+                case 4 ->
+                    user.isActive() ? "Sí" : "No";
+                default ->
+                    null;
             };
         }
     }

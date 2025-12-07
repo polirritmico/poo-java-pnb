@@ -12,9 +12,10 @@ import cl.edbray.pnb.service.UserService;
  * @author eduardo
  */
 public class LoginController {
+
     private final UserService userService;
 
-    public LoginController(UserService userService){
+    public LoginController(UserService userService) {
         this.userService = userService;
     }
 

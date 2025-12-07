@@ -14,6 +14,7 @@ import java.util.List;
  * @author eduardo
  */
 public class SaleService {
+
     private final ISaleRepository repository;
 
     public SaleService(ISaleRepository repository) {

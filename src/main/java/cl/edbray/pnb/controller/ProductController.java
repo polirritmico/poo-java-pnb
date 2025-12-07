@@ -13,6 +13,7 @@ import java.util.List;
  * @author eduardo
  */
 public class ProductController {
+
     private final ProductService service;
 
     public ProductController(ProductService service) {

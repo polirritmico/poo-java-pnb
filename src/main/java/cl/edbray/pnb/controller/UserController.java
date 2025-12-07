@@ -13,6 +13,7 @@ import java.util.List;
  * @author eduardo
  */
 public class UserController {
+
     private final UserService service;
 
     public UserController(UserService service) {

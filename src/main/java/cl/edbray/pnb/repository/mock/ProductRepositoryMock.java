@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
  * @author eduardo
  */
 public class ProductRepositoryMock implements IProductRepository {
+
     private List<Product> products;
     private int nextId;
 
     public ProductRepositoryMock() {
-        products =new ArrayList<>();
+        products = new ArrayList<>();
         nextId = 1;
         loadInitialData();
     }

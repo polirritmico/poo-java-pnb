@@ -22,6 +22,7 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ProductsPanel extends javax.swing.JPanel {
+
     private final ProductController controller;
 
     private ProductTableModel productsTableModel;
@@ -121,9 +122,19 @@ public class ProductsPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent e) { filter(); }
-            @Override public void removeUpdate(DocumentEvent e) { filter(); }
-            @Override public void changedUpdate(DocumentEvent e) { }
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
 
             private void filter() {
                 String search = searchField.getText().trim();
@@ -589,6 +600,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class ProductTableModel extends AbstractTableModel {
+
         private List<Product> products = new ArrayList<>();
         private final String[] columnNames = {"ID", "Nombre producto", "Categoría", "Tipo", "Precio", "Activo"};
 
@@ -620,13 +632,20 @@ public class ProductsPanel extends javax.swing.JPanel {
         public Object getValueAt(int row, int column) {
             Product p = products.get(row);
             return switch (column) {
-                case 0 -> p.getId();
-                case 1 -> p.getName();
-                case 2 -> p.getCategory();
-                case 3 -> p.getType();
-                case 4 -> String.format("$%,d", (int)p.getPrice()).replace(",", ".");
-                case 5 -> p.isActive() ? "Sí" : "No";
-                default -> null;
+                case 0 ->
+                    p.getId();
+                case 1 ->
+                    p.getName();
+                case 2 ->
+                    p.getCategory();
+                case 3 ->
+                    p.getType();
+                case 4 ->
+                    String.format("$%,d", (int) p.getPrice()).replace(",", ".");
+                case 5 ->
+                    p.isActive() ? "Sí" : "No";
+                default ->
+                    null;
             };
         }
 

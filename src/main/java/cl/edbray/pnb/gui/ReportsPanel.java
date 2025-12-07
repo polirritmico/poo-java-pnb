@@ -20,6 +20,7 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ReportsPanel extends javax.swing.JPanel {
+
     private final SaleController controller;
 
     private ReportTableModel reportTableModel;
@@ -67,11 +68,16 @@ public class ReportsPanel extends javax.swing.JPanel {
         LocalDateTime todayEnd = today.plusDays(1);
 
         return switch (filter) {
-            case 1 -> new LocalDateTime[] {today.minusDays(1), today};
-            case 2 -> new LocalDateTime[] {today.minusWeeks(1), todayEnd};
-            case 3 -> new LocalDateTime[] {today.minusMonths(1), todayEnd};
-            case 4 -> new LocalDateTime[] {LocalDateTime.MIN, todayEnd};
-            default -> new LocalDateTime[] {today, todayEnd};
+            case 1 ->
+                new LocalDateTime[]{today.minusDays(1), today};
+            case 2 ->
+                new LocalDateTime[]{today.minusWeeks(1), todayEnd};
+            case 3 ->
+                new LocalDateTime[]{today.minusMonths(1), todayEnd};
+            case 4 ->
+                new LocalDateTime[]{LocalDateTime.MIN, todayEnd};
+            default ->
+                new LocalDateTime[]{today, todayEnd};
         };
     }
 
@@ -192,7 +198,6 @@ public class ReportsPanel extends javax.swing.JPanel {
         generateReport();
     }//GEN-LAST:event_buttonGenerateActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonGenerate;
     private javax.swing.JComboBox<String> comboFilter;
@@ -201,8 +206,8 @@ public class ReportsPanel extends javax.swing.JPanel {
     private javax.swing.JTable tableReport;
     // End of variables declaration//GEN-END:variables
 
-
     private class ReportTableModel extends AbstractTableModel {
+
         private List<Sale> sells = new ArrayList<>();
         private final String[] columnNames = {"ID", "Fecha/Hora", "Usuario", "Total", "Estado"};
 
@@ -231,12 +236,18 @@ public class ReportsPanel extends javax.swing.JPanel {
             Sale s = sells.get(row);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             return switch (column) {
-                case 0 -> s.getId();
-                case 1 -> s.getDateTime().format(formatter);
-                case 2 -> s.getUserName();
-                case 3 -> String.format("$%,.0f", s.getTotal());
-                case 4 -> s.getState();
-                default -> null;
+                case 0 ->
+                    s.getId();
+                case 1 ->
+                    s.getDateTime().format(formatter);
+                case 2 ->
+                    s.getUserName();
+                case 3 ->
+                    String.format("$%,.0f", s.getTotal());
+                case 4 ->
+                    s.getState();
+                default ->
+                    null;
             };
         }
 

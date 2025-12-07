@@ -5,6 +5,7 @@ package cl.edbray.pnb.model;
  * @author eduardo
  */
 public class User {
+
     private int id;
     private String username;
     private String password;
@@ -12,7 +13,8 @@ public class User {
     private String role;
     private boolean active;
 
-    public User() {}
+    public User() {
+    }
 
     public User(int id, String username, String password, String fullName, String role, boolean active) {
         this.id = id;

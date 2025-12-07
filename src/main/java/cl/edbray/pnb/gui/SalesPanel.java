@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author eduardo
  */
 public class SalesPanel extends javax.swing.JPanel {
+
     private final ProductController productController;
     private final SaleController saleController;
     private final User currentUser;
@@ -42,6 +43,7 @@ public class SalesPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form salePanel
+     *
      * @param user The current aunthenticated logged user
      */
     public SalesPanel(User user) {
@@ -96,9 +98,19 @@ public class SalesPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent e) { filter(); }
-            @Override public void removeUpdate(DocumentEvent e) { filter(); }
-            @Override public void changedUpdate(DocumentEvent e) { }
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
 
             private void filter() {
                 String search = searchField.getText().trim();
@@ -480,17 +492,19 @@ public class SalesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (saleItems.isEmpty()) { return; }
+        if (saleItems.isEmpty()) {
+            return;
+        }
 
         int answer = JOptionPane.showConfirmDialog(
             this,
-           "¿Cancelar la venta actual?",
+            "¿Cancelar la venta actual?",
             "Confirmar",
             JOptionPane.YES_NO_OPTION
         );
 
         if (answer == JOptionPane.YES_OPTION) {
-             cleanSale();
+            cleanSale();
         }
     }//GEN-LAST:event_cancelButtonActionPerformed
 
@@ -532,12 +546,10 @@ public class SalesPanel extends javax.swing.JPanel {
                 );
             }
 
-
         }
 
         loadDaySales();
     }//GEN-LAST:event_confirmButtonActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -566,6 +578,7 @@ public class SalesPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class SaleItem {
+
         private final Product product;
         private int amount;
 
@@ -574,41 +587,67 @@ public class SalesPanel extends javax.swing.JPanel {
             this.amount = amount;
         }
 
-        public Product getProduct() { return product; }
-        public int getAmount() { return amount; }
-        public void setAmount(int amount) { this.amount = amount; }
-        public double getSubTotal() { return product.getPrice() * amount; }
+        public Product getProduct() {
+            return product;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+
+        public double getSubTotal() {
+            return product.getPrice() * amount;
+        }
     }
 
     private class SalesDetailsTableModel extends AbstractTableModel {
+
         private final String[] columnNames = {"Producto", "Cantidad", "Precio Unit.", "Subtotal"};
 
         @Override
-        public int getRowCount() { return saleItems.size(); }
+        public int getRowCount() {
+            return saleItems.size();
+        }
 
         @Override
-        public int getColumnCount() { return columnNames.length; }
+        public int getColumnCount() {
+            return columnNames.length;
+        }
 
         @Override
-        public String getColumnName(int column) { return columnNames[column]; }
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
 
         @Override
         public Object getValueAt(int row, int column) {
             SaleItem item = saleItems.get(row);
             return switch (column) {
-                case 0 -> item.getProduct().getName();
-                case 1 -> item.getAmount();
-                case 2 -> String.format("$%,.0f", item.getProduct().getPrice());
-                case 3 -> String.format("$%,.0f", item.getSubTotal());
-                default -> null;
+                case 0 ->
+                    item.getProduct().getName();
+                case 1 ->
+                    item.getAmount();
+                case 2 ->
+                    String.format("$%,.0f", item.getProduct().getPrice());
+                case 3 ->
+                    String.format("$%,.0f", item.getSubTotal());
+                default ->
+                    null;
             };
         }
 
         @Override
-        public boolean isCellEditable(int row, int column) { return false; }
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
     }
 
     private class SalesTableModel extends AbstractTableModel {
+
         private List<Sale> sales = new ArrayList<>();
         private final String[] columnNames = {"#", "Fecha/Hora", "Usuario", "Total", "Estado"};
 
@@ -618,37 +657,52 @@ public class SalesPanel extends javax.swing.JPanel {
         }
 
         @Override
-        public int getRowCount() { return sales.size(); }
+        public int getRowCount() {
+            return sales.size();
+        }
 
         @Override
-        public int getColumnCount() { return columnNames.length; }
+        public int getColumnCount() {
+            return columnNames.length;
+        }
 
         @Override
-        public String getColumnName(int column) { return columnNames[column]; }
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
 
         @Override
         public Object getValueAt(int row, int column) {
             Sale s = sales.get(row);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:MM");
             return switch (column) {
-                case 0 -> s.getId();
-                case 1 -> s.getDateTime().format(formatter);
-                case 2 -> s.getUserName();
-                case 3 -> String.format("$%,.0f", s.getTotal());
-                case 4 -> s.getState();
-                default -> null;
+                case 0 ->
+                    s.getId();
+                case 1 ->
+                    s.getDateTime().format(formatter);
+                case 2 ->
+                    s.getUserName();
+                case 3 ->
+                    String.format("$%,.0f", s.getTotal());
+                case 4 ->
+                    s.getState();
+                default ->
+                    null;
             };
         }
 
         @Override
-        public boolean isCellEditable(int row, int column) { return false; }
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
     }
 
     private class ProductListCellRenderer extends DefaultListCellRenderer {
+
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             if (value instanceof Product) {
                 Product p = (Product) value;
@@ -657,6 +711,7 @@ public class SalesPanel extends javax.swing.JPanel {
             }
 
             return this;
-        };
-    }
+        }
+    ;
+}
 }

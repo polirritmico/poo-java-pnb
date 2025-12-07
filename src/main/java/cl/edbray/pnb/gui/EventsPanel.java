@@ -26,21 +26,21 @@ public class EventsPanel extends javax.swing.JPanel {
         setLayout(new GridBagLayout());
 
         JLabel lblTitle = new JLabel(
-            "<html><center>" +
-            "<h1 style='color: #FC2270;'>🎮 Eventos y Torneos</h1>" +
-            "<p style='margin-top: 20px; font-size: 14px;'>" +
-            "Este módulo está en desarrollo y estará disponible próximamente." +
-            "</p>" +
-            "<p style='margin-top: 30px; font-size: 12px; color: #aaa;'>" +
-            "Funcionalidades planificadas:" +
-            "</p>" +
-            "<ul style='text-align: left; font-size: 12px; color: #aaa;'>" +
-            "<li>Gestión de torneos semanales</li>" +
-            "<li>Inscripción de participantes</li>" +
-            "<li>Registro de resultados</li>" +
-            "<li>Rankings y estadísticas</li>" +
-            "</ul>" +
-            "</center></html>"
+            "<html><center>"
+            + "<h1 style='color: #FC2270;'>🎮 Eventos y Torneos</h1>"
+            + "<p style='margin-top: 20px; font-size: 14px;'>"
+            + "Este módulo está en desarrollo y estará disponible próximamente."
+            + "</p>"
+            + "<p style='margin-top: 30px; font-size: 12px; color: #aaa;'>"
+            + "Funcionalidades planificadas:"
+            + "</p>"
+            + "<ul style='text-align: left; font-size: 12px; color: #aaa;'>"
+            + "<li>Gestión de torneos semanales</li>"
+            + "<li>Inscripción de participantes</li>"
+            + "<li>Registro de resultados</li>"
+            + "<li>Rankings y estadísticas</li>"
+            + "</ul>"
+            + "</center></html>"
         );
 
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER);

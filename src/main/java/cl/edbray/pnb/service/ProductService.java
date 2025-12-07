@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  * @author eduardo
  */
 public class ProductService {
+
     private final IProductRepository repository;
 
     public ProductService(IProductRepository repository) {

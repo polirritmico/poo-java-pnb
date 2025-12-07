@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
  * @author eduardo
  */
 public class UserRepositoryMock implements IUserRepository {
+
     private final List<User> users;
     private int nextId;
 
     public UserRepositoryMock() {
-        users =new ArrayList<>();
+        users = new ArrayList<>();
         nextId = 1;
         loadInitialData();
     }
