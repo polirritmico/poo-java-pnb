@@ -7,6 +7,7 @@ package cl.edbray.pnb.service;
 import cl.edbray.pnb.model.Product;
 import cl.edbray.pnb.repository.IProductRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -82,7 +83,14 @@ public class ProductService {
     }
 
     public List<Product> searchByName(String name) {
-        return repository.searchByName(name);
+        if (name == null || name.isBlank()) {
+            return listAll();
+        }
+
+        String searchLower = name.toLowerCase();
+        return repository.listAll().stream()
+            .filter(p -> p.getName().toLowerCase().contains(searchLower))
+            .collect(Collectors.toList());
     }
 
     private void validateProductData(

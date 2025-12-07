@@ -75,6 +75,7 @@ public class ProductRepositoryMock implements IProductRepository {
 
     @Override
     public List<Product> searchByName(String name) {
+        // TODO: check, unussed by the ProductService
         return products.stream()
             .filter(p -> p.getName().equalsIgnoreCase(name))
             .collect(Collectors.toList());
@@ -108,6 +109,4 @@ public class ProductRepositoryMock implements IProductRepository {
             storedProduct.setActive(state);
         }
     }
-
-
 }
