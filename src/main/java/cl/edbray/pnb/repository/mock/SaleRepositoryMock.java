@@ -35,6 +35,13 @@ public class SaleRepositoryMock implements ISaleRepository {
         sales.add(new Sale(nextId++, now.minusHours(2), 3, "operador2", 3500, "ACTIVA"));
         sales.add(new Sale(nextId++, now.minusHours(1), 2, "operador1", 8500, "ANULADA"));
         sales.add(new Sale(nextId++, now.minusMinutes(30), 1, "admin", 6000, "ACTIVA"));
+
+        sales.add(new Sale(nextId++, now.minusDays(1), 1, "admin", 100_000, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusWeeks(1), 1, "admin", 200_000, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusMonths(1), 1, "admin", 300_000, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusYears(1), 1, "admin", 9_000_000, "ACTIVA"));
+
+        sales.add(new Sale(nextId++, now.minusDays(1), 1, "admin", 42, "ANULADA"));
     }
 
     @Override
@@ -60,7 +67,7 @@ public class SaleRepositoryMock implements ISaleRepository {
     @Override
     public List<Sale> listToday() {
         LocalDateTime dayStart = LocalDate.now().atStartOfDay();
-        LocalDateTime dayEnd = dayStart.plusDays(1).minusSeconds(1);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
         return listByDateRange(dayStart, dayEnd);
     }
 
