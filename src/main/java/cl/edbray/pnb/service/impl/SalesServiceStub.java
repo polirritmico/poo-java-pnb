@@ -33,6 +33,13 @@ public class SalesServiceStub implements SalesService {
         sales.add(new Sale(nextId++, now.minusHours(2), 2, "operador", 7500, "ACTIVA"));
         sales.add(new Sale(nextId++, now.minusHours(1), 1, "admin", 3000, "ACTIVA"));
         sales.add(new Sale(nextId++, now.minusMinutes(30), 2, "operador", 4500, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusMinutes(30), 2, "operador", 4500, "ACTIVA"));
+
+        sales.add(new Sale(nextId++, now.minusDays(1), 2, "operador", 1234, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusDays(4), 2, "operador", 40000, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusDays(10), 2, "operador", 12000, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusDays(25), 2, "operador", 23005, "ACTIVA"));
+        sales.add(new Sale(nextId++, now.minusYears(1), 2, "operador", 100000, "ACTIVA"));
     }
 
     @Override

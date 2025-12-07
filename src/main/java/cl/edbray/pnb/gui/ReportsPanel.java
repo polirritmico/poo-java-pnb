@@ -45,29 +45,37 @@ public class ReportsPanel extends javax.swing.JPanel {
         comboFilter.addItem("Ayer");
         comboFilter.addItem("Última semana");
         comboFilter.addItem("Último mes");
+        comboFilter.addItem("Histórico");
     }
 
-    private LocalDateTime getFirstDateByFilter(int filter) {
+    private boolean isInFilterRange(int filter, LocalDateTime checkDate) {
         LocalDateTime today = LocalDate.now().atStartOfDay();
+
         return switch (filter) {
-            case 0 -> today;
-            case 1 -> today.minusDays(1);
-            case 2 -> today.minusWeeks(1);
-            case 3 -> today.minusMonths(1);
-            default -> today;
+            case 0 -> checkDate.isAfter(today);
+            case 1 -> checkDate.isAfter(today.minusDays(1)) && checkDate.isBefore(today);
+            case 2 -> checkDate.isAfter(today.minusWeeks(1));
+            case 3 -> checkDate.isAfter(today.minusMonths(1));
+            case 4 -> true;
+            default -> false;
         };
     }
 
-    private void generateReport() {
-        List<Sale> allSales = salesService.listAll();
-        tableModel.setSells(allSales);
-
-        int selectedFilterIndex = comboFilter.getSelectedIndex();
-        LocalDateTime startingDate = getFirstDateByFilter(selectedFilterIndex);
-
-        double total = allSales.stream()
+    private List<Sale> filterSales(int filter) {
+        List<Sale> matches = salesService.listAll().stream()
             .filter(s -> "ACTIVA".equals(s.getState()))
-            .filter(s -> !s.getDateTime().isBefore(startingDate))
+            .filter(s -> isInFilterRange(filter, s.getDateTime()))
+            .toList();
+
+        tableModel.setSells(matches);
+        return matches;
+    }
+
+    private void generateReport() {
+        int selectedFilter = comboFilter.getSelectedIndex();
+
+        List<Sale> matches = filterSales(selectedFilter);
+        double total = matches.stream()
             .mapToDouble(Sale::getTotal)
             .sum();
 
@@ -93,7 +101,7 @@ public class ReportsPanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(900, 500));
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         layout.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0};
-        layout.rowHeights = new int[] {0, 0, 0, 0, 0};
+        layout.rowHeights = new int[] {0, 5, 0, 5, 0};
         layout.columnWeights = new double[] {1.0};
         layout.rowWeights = new double[] {0.1};
         setLayout(layout);
@@ -164,7 +172,7 @@ public class ReportsPanel extends javax.swing.JPanel {
         gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weighty = 0.8;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         add(tablePane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
