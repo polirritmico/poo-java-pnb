@@ -115,6 +115,12 @@ public class UsersPanel extends javax.swing.JPanel {
         usernameField.requestFocus();
     }
 
+    private void filterUsers(String search) {
+        search = search.trim();
+        List<User> matches = usersService.searchByUsername(search);
+        tableModel.setUsers(usersService.searchByUsername(search));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -127,6 +133,7 @@ public class UsersPanel extends javax.swing.JPanel {
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
         newUserButton = new javax.swing.JButton();
         tablePanel = new javax.swing.JScrollPane();
         usersTable = new javax.swing.JTable();
@@ -157,6 +164,14 @@ public class UsersPanel extends javax.swing.JPanel {
 
         searchField.setPreferredSize(new java.awt.Dimension(300, 23));
         searchPanel.add(searchField);
+
+        searchButton.setText(" 🔍 ");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+        searchPanel.add(searchButton);
 
         newUserButton.setText("Nuevo Usuario");
         newUserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -286,6 +301,10 @@ public class UsersPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        filterUsers(searchField.getText());
+    }//GEN-LAST:event_searchButtonActionPerformed
+
     private void updateUser(
         User user,
         String username,
@@ -382,6 +401,7 @@ public class UsersPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JButton saveButton;
+    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JPanel searchPanel;

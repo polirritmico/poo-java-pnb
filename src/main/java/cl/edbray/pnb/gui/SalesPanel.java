@@ -112,6 +112,13 @@ public class SalesPanel extends javax.swing.JPanel {
         totalField.setText(String.format("TOTAL: $%,.0f", total));
     }
 
+    private void filterProducts(String search) {
+        search = search.trim();
+        productsListModel.clear();
+        productsService.searchByName(search)
+            .forEach(productsListModel::addElement);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -185,6 +192,11 @@ public class SalesPanel extends javax.swing.JPanel {
         searchPanel.add(searchField, gridBagConstraints);
 
         searchButton.setText("🔍");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -489,6 +501,10 @@ public class SalesPanel extends javax.swing.JPanel {
 
         loadDaySales();
     }//GEN-LAST:event_confirmButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        filterProducts(searchField.getText());
+    }//GEN-LAST:event_searchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
