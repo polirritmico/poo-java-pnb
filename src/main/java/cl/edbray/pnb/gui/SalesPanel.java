@@ -4,15 +4,13 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.app.ApplicationContext;
+import cl.edbray.pnb.controller.ProductController;
+import cl.edbray.pnb.controller.SaleController;
 import cl.edbray.pnb.model.Product;
 import cl.edbray.pnb.model.Sale;
-import cl.edbray.pnb.service.ProductsService;
-import cl.edbray.pnb.service.SalesService;
-import cl.edbray.pnb.service.impl.ProductsServiceStub;
-import cl.edbray.pnb.service.impl.SalesServiceStub;
+import cl.edbray.pnb.model.User;
 import java.awt.Component;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -30,8 +30,9 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author eduardo
  */
 public class SalesPanel extends javax.swing.JPanel {
-    private final ProductsService productsService;
-    private final SalesService salesService;
+    private final ProductController productController;
+    private final SaleController saleController;
+    private final User currentUser;
 
     private SalesTableModel salesTableModel;
     private SalesDetailsTableModel detailsTableModel;
@@ -41,13 +42,16 @@ public class SalesPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form salePanel
+     * @param user The current aunthenticated logged user
      */
-    public SalesPanel() {
-        productsService = new ProductsServiceStub();
-        salesService = new SalesServiceStub();
+    public SalesPanel(User user) {
+        productController = ApplicationContext.getInstance().getProductController();
+        saleController = ApplicationContext.getInstance().getSaleController();
+        currentUser = user;
 
         initComponents();
         setupComponents();
+        setupListeners();
         loadProducts();
         loadDaySales();
         customizeTables();
@@ -81,15 +85,40 @@ public class SalesPanel extends javax.swing.JPanel {
         detailsTable.setDefaultRenderer(Object.class, centerRenderer);
     }
 
+    private void setupListeners() {
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent ev) {
+                loadProducts();
+                loadDaySales();
+                searchField.setText("");
+            }
+        });
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { filter(); }
+            @Override public void removeUpdate(DocumentEvent e) { filter(); }
+            @Override public void changedUpdate(DocumentEvent e) { }
+
+            private void filter() {
+                String search = searchField.getText().trim();
+                productsListModel.clear();
+                productController.searchByName(search).stream()
+                    .filter(p -> p.isActive())
+                    .forEach(productsListModel::addElement);
+            }
+        });
+    }
+
     private void loadProducts() {
         productsListModel.clear();
-        productsService.listAll()
+        productController.listActives()
             .forEach(productsListModel::addElement);
     }
 
     private void loadDaySales() {
-        salesTableModel.setSales(salesService.listTodaySales());
-        double total = salesService.calculateTotalByDate(LocalDate.now());
+        salesTableModel.setSales(saleController.listToday());
+        double total = saleController.calculateTodayTotal();
         dailyTotalField.setText(String.format("Total del día: $%,.0f", total));
     }
 
@@ -115,8 +144,15 @@ public class SalesPanel extends javax.swing.JPanel {
     private void filterProducts(String search) {
         search = search.trim();
         productsListModel.clear();
-        productsService.searchByName(search)
+        productController.searchByName(search).stream()
+            .filter(p -> p.isActive())
             .forEach(productsListModel::addElement);
+    }
+
+    private void registerSale(double total) {
+        saleController.registerSale(
+            currentUser.getId(), currentUser.getUsername(), total
+        );
     }
 
     /**
@@ -134,7 +170,6 @@ public class SalesPanel extends javax.swing.JPanel {
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
         searchListPanel = new javax.swing.JScrollPane();
         productList = new javax.swing.JList<>();
         amountLabel = new javax.swing.JLabel();
@@ -187,22 +222,10 @@ public class SalesPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.3;
         searchPanel.add(searchField, gridBagConstraints);
-
-        searchButton.setText("🔍");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.1;
-        searchPanel.add(searchButton, gridBagConstraints);
 
         searchListPanel.setViewportView(productList);
 
@@ -487,24 +510,33 @@ public class SalesPanel extends javax.swing.JPanel {
         );
 
         if (answer == JOptionPane.YES_OPTION) {
-            // TODO: get user from login
-            int userId = 9999;
-            String userName = "Placeholder";
-            Sale sale = new Sale(
-                0, LocalDateTime.now(), userId, userName, total, "ACTIVA"
-            );
+            try {
+                registerSale(total);
 
-            salesService.save(sale);
-            JOptionPane.showMessageDialog(this, "Venta registrada exitosamente");
-            cleanSale();
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Venta registrada exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                cleanSale();
+                loadDaySales();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al cargar usuarios: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+
+
         }
 
         loadDaySales();
     }//GEN-LAST:event_confirmButtonActionPerformed
-
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        filterProducts(searchField.getText());
-    }//GEN-LAST:event_searchButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -524,7 +556,6 @@ public class SalesPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane historyTablePanel;
     private javax.swing.JList<Product> productList;
     private javax.swing.JButton removeButton;
-    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JScrollPane searchListPanel;
@@ -535,7 +566,7 @@ public class SalesPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class SaleItem {
-        private Product product;
+        private final Product product;
         private int amount;
 
         public SaleItem(Product product, int amount) {
@@ -550,7 +581,7 @@ public class SalesPanel extends javax.swing.JPanel {
     }
 
     private class SalesDetailsTableModel extends AbstractTableModel {
-        private String[] columnNames = {"Producto", "Cantidad", "Precio Unit.", "Subtotal"};
+        private final String[] columnNames = {"Producto", "Cantidad", "Precio Unit.", "Subtotal"};
 
         @Override
         public int getRowCount() { return saleItems.size(); }
