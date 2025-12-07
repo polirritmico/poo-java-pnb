@@ -7,8 +7,6 @@ package cl.edbray.pnb.gui;
 import cl.edbray.pnb.app.ApplicationContext;
 import cl.edbray.pnb.controller.UserController;
 import cl.edbray.pnb.model.User;
-import cl.edbray.pnb.service.UsersService;
-import cl.edbray.pnb.service.impl.UsersServiceStub;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -93,9 +91,9 @@ public class UsersPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent e) { filterUsers(); }
-            @Override public void removeUpdate(DocumentEvent de) { filterUsers(); }
-            @Override public void changedUpdate(DocumentEvent de) { }
+            @Override public void insertUpdate(DocumentEvent ev) { filterUsers(); }
+            @Override public void removeUpdate(DocumentEvent ev) { filterUsers(); }
+            @Override public void changedUpdate(DocumentEvent ev) { }
 
             private void filterUsers() {
                 String search = searchField.getText().trim();
