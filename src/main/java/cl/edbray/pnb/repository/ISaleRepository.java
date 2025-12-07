@@ -39,7 +39,7 @@ public interface ISaleRepository {
      * Lista ventas del día actual.
      * @return Lista de ventas realizadas hoy
      */
-    List<Sale> listTodaySales();
+    List<Sale> listToday();
 
     /**
      * Lista ventas realizadas por un usuario específico.
@@ -73,5 +73,5 @@ public interface ISaleRepository {
      * Calcula el total de ventas activas del día actual.
      * @return Total de ventas de hoy en pesos
      */
-    double calculateTodaySalesTotal();
+    double calculateTodayTotal();
 }

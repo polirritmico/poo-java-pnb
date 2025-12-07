@@ -58,7 +58,7 @@ public class SaleRepositoryMock implements ISaleRepository {
     }
 
     @Override
-    public List<Sale> listTodaySales() {
+    public List<Sale> listToday() {
         LocalDateTime dayStart = LocalDate.now().atStartOfDay();
         LocalDateTime dayEnd = dayStart.plusDays(1).minusSeconds(1);
         return listByDateRange(dayStart, dayEnd);
@@ -98,8 +98,8 @@ public class SaleRepositoryMock implements ISaleRepository {
     }
 
     @Override
-    public double calculateTodaySalesTotal() {
-        return listTodaySales().stream()
+    public double calculateTodayTotal() {
+        return listToday().stream()
             .filter(s -> "ACTIVA".equals(s.getState()))
             .mapToDouble(Sale::getTotal)
             .sum();
