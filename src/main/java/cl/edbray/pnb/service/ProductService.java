@@ -57,7 +57,16 @@ public class ProductService {
             throw new RuntimeException("Producto no encontrado");
         }
 
-        repository.setState(id, !product.isActive());
+        repository.changeState(id, !product.isActive());
+    }
+
+    public void changeState(int id) {
+        Product product = repository.searchById(id);
+        if (product == null) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+
+        repository.changeState(id, !product.isActive());
     }
 
     public List<Product> listAll() {
@@ -66,6 +75,10 @@ public class ProductService {
 
     public List<Product> listActives() {
         return repository.listActive();
+    }
+
+    public List<Product> listByCategory(String category) {
+        return repository.listByCategory(category);
     }
 
     public List<Product> searchByName(String name) {
