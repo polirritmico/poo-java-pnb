@@ -7,8 +7,6 @@ package cl.edbray.pnb.gui;
 import cl.edbray.pnb.app.ApplicationContext;
 import cl.edbray.pnb.controller.ProductController;
 import cl.edbray.pnb.model.Product;
-import cl.edbray.pnb.service.ProductsService;
-import cl.edbray.pnb.service.impl.ProductsServiceStub;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 
 /**
