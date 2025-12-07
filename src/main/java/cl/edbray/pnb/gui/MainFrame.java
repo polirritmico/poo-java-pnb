@@ -21,6 +21,7 @@ import javax.swing.UIManager;
  * @author eduardo
  */
 public class MainFrame extends javax.swing.JFrame {
+
     private final User currentUser;
     private CardLayout cardLayout;
 
@@ -36,7 +37,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void setTimerHandler() {
-        Timer timer = new Timer(1000, e-> {
+        Timer timer = new Timer(1000, e -> {
             statusTime.setText(
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
             );
@@ -82,11 +83,11 @@ public class MainFrame extends javax.swing.JFrame {
     private JPanel createHomePanel() {
         JPanel homePanel = new JPanel(new GridBagLayout());
         JLabel content = new JLabel(
-            "<html><center>" +
-            "<h1>☕ Pixel & Beans</h1>" +
-            "<p>Sistema de Gestión para <b>Café Arcade</b>.</p>" +
-            "<p style='margin-top: 20px;'>Selecciona una opción del menú superior para comenzar.</p>" +
-            "</center></html>"
+            "<html><center>"
+            + "<h1>☕ Pixel & Beans</h1>"
+            + "<p>Sistema de Gestión para <b>Café Arcade</b>.</p>"
+            + "<p style='margin-top: 20px;'>Selecciona una opción del menú superior para comenzar.</p>"
+            + "</center></html>"
         );
 
         content.setHorizontalAlignment(SwingConstants.CENTER);
@@ -300,14 +301,14 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void menuEntryAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryAboutActionPerformed
         JOptionPane.showMessageDialog(this,
-            "<html><center>" +
-            "  <h2>Pixel & Beans</h2>" +
-            "  <p>Sistema de gestión para <b>Café Arcade</b>.</p>" +
-            "  <p>Versión: 0.1.0</p>" +
-            "  <p style='margin-top: 10px;'>Desarrollado por: Eduardo Bray</p>" +
-            "  <p>Asignatura: Programación Orientada a Objetos</p>" +
-            "  <p>Año: 2025</p>" +
-            "</center></html>",
+            "<html><center>"
+            + "  <h2>Pixel & Beans</h2>"
+            + "  <p>Sistema de gestión para <b>Café Arcade</b>.</p>"
+            + "  <p>Versión: 0.1.0</p>"
+            + "  <p style='margin-top: 10px;'>Desarrollado por: Eduardo Bray</p>"
+            + "  <p>Asignatura: Programación Orientada a Objetos</p>"
+            + "  <p>Año: 2025</p>"
+            + "</center></html>",
             "Acerda de",
             JOptionPane.INFORMATION_MESSAGE
         );
@@ -326,6 +327,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEntryTournamentsActionPerformed
 
     private void menuEntrySalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntrySalesActionPerformed
+
         showView("SALES");
     }//GEN-LAST:event_menuEntrySalesActionPerformed
 
@@ -336,9 +338,9 @@ public class MainFrame extends javax.swing.JFrame {
     private void menuEntryTopSellersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEntryTopSellersActionPerformed
         showView("REPORTS");
         JOptionPane.showMessageDialog(this,
-        "El reporte de productos más vendidos estará disponible a futuro",
-        "En desarrollo",
-        JOptionPane.INFORMATION_MESSAGE);
+            "El reporte de productos más vendidos estará disponible a futuro",
+            "En desarrollo",
+            JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_menuEntryTopSellersActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

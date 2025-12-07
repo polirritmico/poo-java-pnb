@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class SaleRepositoryMock implements ISaleRepository {
 
-    private List<Sale> sales;
+    private final List<Sale> sales;
     private int nextId;
 
     public SaleRepositoryMock() {
