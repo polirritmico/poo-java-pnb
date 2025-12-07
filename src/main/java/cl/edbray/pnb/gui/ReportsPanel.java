@@ -4,14 +4,15 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.app.ApplicationContext;
+import cl.edbray.pnb.controller.SaleController;
 import cl.edbray.pnb.model.Sale;
-import cl.edbray.pnb.service.SalesService;
-import cl.edbray.pnb.service.impl.SalesServiceStub;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -19,25 +20,28 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ReportsPanel extends javax.swing.JPanel {
-    private final SalesService salesService;
-    private ReportTableModel tableModel;
+    private final SaleController controller;
+
+    private ReportTableModel reportTableModel;
 
     /**
      * Creates new form Reports
      */
     public ReportsPanel() {
-        salesService = new SalesServiceStub();
+        controller = ApplicationContext.getInstance().getSaleController();
 
         initComponents();
         setupComponents();
     }
 
     private void setupComponents() {
-        tableModel = new ReportTableModel();
-        tableReport.setModel(tableModel);
+        reportTableModel = new ReportTableModel();
+        tableReport.setModel(reportTableModel);
 
         setFilters();
-        generateReport();
+        setupListeners();
+        loadTodaySales();
+        updateReport();
     }
 
     private void setFilters() {
@@ -48,38 +52,46 @@ public class ReportsPanel extends javax.swing.JPanel {
         comboFilter.addItem("Histórico");
     }
 
-    private boolean isInFilterRange(int filter, LocalDateTime checkDate) {
+    private void setupListeners() {
+        comboFilter.addActionListener(e -> {
+            updateReport();
+        });
+    }
+
+    private void loadTodaySales() {
+        reportTableModel.setSells(controller.listToday());
+    }
+
+    private LocalDateTime[] getFilterRangeDates(int filter) {
         LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime todayEnd = today.plusDays(1);
 
         return switch (filter) {
-            case 0 -> checkDate.isAfter(today);
-            case 1 -> checkDate.isAfter(today.minusDays(1)) && checkDate.isBefore(today);
-            case 2 -> checkDate.isAfter(today.minusWeeks(1));
-            case 3 -> checkDate.isAfter(today.minusMonths(1));
-            case 4 -> true;
-            default -> false;
+            case 1 -> new LocalDateTime[] {today.minusDays(1), today};
+            case 2 -> new LocalDateTime[] {today.minusWeeks(1), todayEnd};
+            case 3 -> new LocalDateTime[] {today.minusMonths(1), todayEnd};
+            case 4 -> new LocalDateTime[] {LocalDateTime.MIN, todayEnd};
+            default -> new LocalDateTime[] {today, todayEnd};
         };
     }
 
-    private List<Sale> filterSales(int filter) {
-        List<Sale> matches = salesService.listAll().stream()
-            .filter(s -> "ACTIVA".equals(s.getState()))
-            .filter(s -> isInFilterRange(filter, s.getDateTime()))
-            .toList();
+    private void updateReport() {
+        int selectedFilter = comboFilter.getSelectedIndex();
+        LocalDateTime[] range = getFilterRangeDates(selectedFilter);
 
-        tableModel.setSells(matches);
-        return matches;
+        reportTableModel.setSells(controller.listByDateRange(range[0], range[1]));
+        double total = controller.calculateTotalByRange(range[0], range[1]);
+        labelTotal.setText(String.format("Total: $%,.0f", total));
     }
 
     private void generateReport() {
-        int selectedFilter = comboFilter.getSelectedIndex();
-
-        List<Sale> matches = filterSales(selectedFilter);
-        double total = matches.stream()
-            .mapToDouble(Sale::getTotal)
-            .sum();
-
-        labelTotal.setText(String.format("Total: $%,.0f", total));
+        String range = comboFilter.getSelectedItem().toString();
+        JOptionPane.showMessageDialog(
+            this,
+            "Se ha generado exitosamente el reporte de ventas (" + range + ").",
+            "Éxito",
+            JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     /**
