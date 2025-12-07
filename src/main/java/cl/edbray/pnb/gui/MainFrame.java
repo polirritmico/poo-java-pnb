@@ -4,12 +4,16 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.model.User;
 import java.awt.CardLayout;
 import java.awt.GridBagLayout;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 /**
@@ -17,15 +21,35 @@ import javax.swing.UIManager;
  * @author eduardo
  */
 public class MainFrame extends javax.swing.JFrame {
+    private User currentUser;
     private CardLayout cardLayout;
 
-    /**
-     * Creates new form MainFrame
-     */
-    public MainFrame() {
+    //public MainFrame(User user) {
+    public MainFrame(User user) {
+        currentUser = user;
+
         initComponents();
+        setTimerHandler();
         setupNavigation();
         applyCustomTheme();
+        setupWindow();
+    }
+
+    private void setupWindow() {
+        setTitle(
+            "Pixel & Bean - " + currentUser.getFullName() + " (" + currentUser.getRole() + ")"
+        );
+        statusUsername.setText(currentUser.getUsername());
+        statusRole.setText(currentUser.getRole());
+    }
+
+    private void setTimerHandler() {
+        Timer timer = new Timer(1000, e-> {
+            statusTime.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
+        });
+        timer.start();
     }
 
     /**
@@ -104,8 +128,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         statusTimeLabel.setText("Hora actual: ");
         statusBar.add(statusTimeLabel);
-
-        statusTime.setText("23:59");
         statusBar.add(statusTime);
 
         getContentPane().add(statusBar, java.awt.BorderLayout.SOUTH);
@@ -276,41 +298,6 @@ public class MainFrame extends javax.swing.JFrame {
         "En desarrollo",
         JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_menuEntryTopSellersActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainFrame().setVisible(true);
-            }
-        });
-    }
 
     private void applyCustomTheme() {
         statusBar.setBackground(UIManager.getColor("MenuBar.background"));

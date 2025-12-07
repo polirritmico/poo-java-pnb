@@ -243,9 +243,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="statusTime">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="23:59"/>
-          </Properties>
         </Component>
       </SubComponents>
     </Container>

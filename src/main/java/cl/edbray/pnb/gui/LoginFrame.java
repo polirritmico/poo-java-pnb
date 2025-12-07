@@ -4,6 +4,9 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.app.ApplicationContext;
+import cl.edbray.pnb.controller.LoginController;
+import cl.edbray.pnb.model.User;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,13 +14,22 @@ import javax.swing.JOptionPane;
  * @author eduardo
  */
 public class LoginFrame extends javax.swing.JFrame {
+    private LoginController controller;
 
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
+        controller = ApplicationContext.getInstance().getLoginController();
+
         initComponents();
-        this.getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
+    }
+
+    private void startMain(User user) {
+        MainFrame main = new MainFrame(user);
+        main.setVisible(true);
+        this.dispose();
     }
 
     /**
@@ -207,17 +219,35 @@ public class LoginFrame extends javax.swing.JFrame {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
-        if (username.equals("admin") && password.equals("1234")) {
-        //if (true) {
-            MainFrame main = new MainFrame();
-            main.setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "Usuario o contraseña incorrectos",
-                "Error",
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Por favor completa todos los campos",
+                "Valdación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        try {
+            User user = controller.authenticate(username, password);
+            JOptionPane.showMessageDialog(
+                this,
+                "¡Bienvenido " + user.getFullName() + "!",
+                "Loin exitoso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+            startMain(user);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Error de autenticación",
                 JOptionPane.ERROR_MESSAGE
             );
+            passwordField.setText("");
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
@@ -250,7 +280,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            @Override public void run() {
                 new LoginFrame().setVisible(true);
             }
         });
