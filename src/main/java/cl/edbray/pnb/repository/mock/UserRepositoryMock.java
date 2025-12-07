@@ -26,8 +26,8 @@ public class UserRepositoryMock implements IUserRepository {
 
     private void loadInitialData() {
         users.add(new User(nextId++, "admin", "admin123", "Administrador del Sistema", "ADMIN", true));
-        users.add(new User(nextId++, "operador1", "op123", "Alan Brito", "OPERADOR", true));
-        users.add(new User(nextId++, "operador2", "op456", "María Dolores", "OPERADOR", true));
+        users.add(new User(nextId++, "operador1", "op1234", "Alan Brito", "OPERADOR", true));
+        users.add(new User(nextId++, "operador2", "op4567", "María Dolores", "OPERADOR", true));
         users.add(new User(nextId++, "cajero", "caj123", "Pedro Ramírez", "OPERADOR", false));
     }
 
