@@ -4,6 +4,8 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.app.ApplicationContext;
+import cl.edbray.pnb.controller.UserController;
 import cl.edbray.pnb.model.User;
 import cl.edbray.pnb.service.UsersService;
 import cl.edbray.pnb.service.impl.UsersServiceStub;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -18,17 +21,16 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class UsersPanel extends javax.swing.JPanel {
+    private final UserController controller;
 
     private User selectedUser;
     private UserTableModel tableModel;
-
-    private final UsersService usersService;
 
     /**
      * Creates new form UsersPanel
      */
     public UsersPanel() {
-        usersService = new UsersServiceStub();
+        controller = ApplicationContext.getInstance().getUserController();
 
         initComponents();
         setupTable();
@@ -38,7 +40,17 @@ public class UsersPanel extends javax.swing.JPanel {
     }
 
     private void loadUsers() {
-        tableModel.setUsers(usersService.listAll());
+        try {
+            List<User> users = controller.listAll();
+            tableModel.setUsers(users);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error al cargar usuarios: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     private void setupTable() {
@@ -118,8 +130,7 @@ public class UsersPanel extends javax.swing.JPanel {
 
     private void filterUsers(String search) {
         search = search.trim();
-        List<User> matches = usersService.searchByUsername(search);
-        tableModel.setUsers(usersService.searchByUsername(search));
+        tableModel.setUsers(controller.search(search));
     }
 
     /**
@@ -249,29 +260,57 @@ public class UsersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // TODO: must determine whether to use validations for new users (e.g.
+        // duplicate usernames) or for updating existing users.
+
         if (!validateForm()) {
             return;
         }
 
         String username = usernameField.getText().trim();
-        String password = new String(passwordField.getPassword());
+        String password = new String(passwordField.getPassword()).trim();
         String fullName = fullNameField.getText().trim();
         String role = (String) roleComboBox.getSelectedItem();
         boolean active = activeCheck.isSelected();
 
-        if (selectedUser == null) {
-            User newUser = new User(0, username, password, fullName, role, active);
-            usersService.save(newUser);
+        try {
+            if (selectedUser == null) {
+                controller.create(username, password, fullName, role);
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario creado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                controller.update(
+                    selectedUser.getId(), username, password, fullName, role, active
+                );
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario actualizado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
 
-            JOptionPane.showMessageDialog(this, "Usuario guardado exitosamente.");
-        } else {
-            updateUser(selectedUser, username, password, fullName, role, active);
-            usersService.update(selectedUser);
-            JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
+            cleanForm();
+            loadUsers();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
-
-        cleanForm();
-        loadUsers();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
@@ -286,10 +325,24 @@ public class UsersPanel extends javax.swing.JPanel {
             JOptionPane.YES_NO_OPTION
         );
         if (userChoice == JOptionPane.YES_OPTION) {
-            usersService.delete(selectedUser.getId());
-            JOptionPane.showMessageDialog(this, "Usuario eliminado exitosamente.");
-            cleanForm();
-            loadUsers();
+            try {
+                controller.delete(selectedUser.getId());
+
+                JOptionPane.showMessageDialog(
+                    this, "Usuario eliminado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE
+                );
+
+                cleanForm();
+                loadUsers();
+
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
@@ -329,7 +382,7 @@ public class UsersPanel extends javax.swing.JPanel {
             return false;
         }
 
-        boolean alreadyExists = usersService.listAll().stream()
+        boolean alreadyExists = controller.listAll().stream()
             .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
 
         if (alreadyExists) {

@@ -4,6 +4,8 @@
  */
 package cl.edbray.pnb.gui;
 
+import cl.edbray.pnb.app.ApplicationContext;
+import cl.edbray.pnb.controller.ProductController;
 import cl.edbray.pnb.model.Product;
 import cl.edbray.pnb.service.ProductsService;
 import cl.edbray.pnb.service.impl.ProductsServiceStub;
@@ -22,6 +24,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ProductsPanel extends javax.swing.JPanel {
     private final ProductsService productsService;
+    private ProductController controller;
 
     private ProductTableModel tableModel;
     private DefaultComboBoxModel categoriesModel;
@@ -39,6 +42,7 @@ public class ProductsPanel extends javax.swing.JPanel {
      */
     public ProductsPanel() {
         productsService = new ProductsServiceStub();
+        controller = ApplicationContext.getInstance().getProductController();
 
         initComponents();
         setupTable();
@@ -107,18 +111,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) { filter(); }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) { filter(); }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) { }
+            @Override public void insertUpdate(DocumentEvent e) { filter(); }
+            @Override public void removeUpdate(DocumentEvent e) { filter(); }
+            @Override public void changedUpdate(DocumentEvent e) { }
 
             private void filter() {
-                String text = searchField.getText();
-                // TODO
+                String search = searchField.getText();
+                List<Product> product = controller.searchByName(search);
+                tableModel.setProducts(product);
             }
         });
     }
@@ -132,7 +132,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void loadProducts() {
-        List<Product> products = productsService.listAll();
+        List<Product> products = controller.listAll();
         tableModel.setProducts(products);
     }
 
@@ -448,34 +448,34 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        if (!validateForm()) {
-            return;
-        }
+        try {
+            if (!validateForm()) {
+                return;
+            }
 
-        String name = nameField.getText().trim();
-        String category = categoryComboBox.getSelectedItem().toString();
-        String type = typeComboBox.getSelectedItem().toString();
-        int price = Integer.parseInt(getPriceValue());
-        boolean active = enabledCheck.isSelected();
+            String name = nameField.getText().trim();
+            String category = categoryComboBox.getSelectedItem().toString();
+            String type = typeComboBox.getSelectedItem().toString();
+            int price = Integer.parseInt(getPriceValue());
+            boolean active = enabledCheck.isSelected();
 
-        if (selectedProduct == null) {
-            productsService.save(new Product(0, name, category, type, price, active));
-
-            JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
-        } else {
-            selectedProduct.setName(name);
-            selectedProduct.setCategory(category);
-            selectedProduct.setType(type);
-            selectedProduct.setPrice(price);
-            selectedProduct.setActive(active);
-
-            productsService.update(selectedProduct);
-
+            if (selectedProduct == null) {
+                controller.create(name, category, type, price);
+            } else {
+                controller.update(selectedProduct.getId(), name, category, type, price, active);
+            }
             JOptionPane.showMessageDialog(this, "Producto actualizado exitosamente");
-        }
 
-        cleanForm();
-        loadProducts();
+            cleanForm();
+            loadProducts();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
