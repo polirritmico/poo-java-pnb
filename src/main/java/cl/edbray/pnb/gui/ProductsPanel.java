@@ -80,7 +80,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         typeComboBox.setModel(typesModel);
 
         categoryComboBox.setSelectedIndex(-1);
-
     }
 
     private void setupListeners() {
@@ -161,6 +160,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         priceField.setText("0");
         enabledCheck.setEnabled(false);
         deleteButton.setEnabled(false);
+        changeStateButton.setEnabled(false);
         nameField.requestFocus();
     }
 
@@ -172,6 +172,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         enabledCheck.setSelected(product.isActive());
 
         deleteButton.setEnabled(true);
+        changeStateButton.setEnabled(true);
     }
 
     private boolean validateForm() {
@@ -277,12 +278,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 0.05;
         searchPanel.add(searchLabel, gridBagConstraints);
-
-        searchField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchFieldActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -391,12 +386,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         productDataPanel.add(typeLabel, gridBagConstraints);
-
-        typeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeComboBoxActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
@@ -482,14 +471,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         add(ContentPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchFieldActionPerformed
-
-    private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeComboBoxActionPerformed
-
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
         cleanForm();
     }//GEN-LAST:event_newButtonActionPerformed
@@ -574,8 +555,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
-        if (selectedProduct == null) { return; }
-
         controller.changeState(selectedProduct.getId());
         loadInForm(selectedProduct);
         cleanForm();
