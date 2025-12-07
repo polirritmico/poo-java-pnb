@@ -87,9 +87,8 @@ public class UsersPanel extends javax.swing.JPanel {
             @Override public void changedUpdate(DocumentEvent de) { }
 
             private void filterUsers() {
-                String search = searchField.getText();
-                List<User> users = controller.search(search);
-                tableModel.setUsers(users);
+                String search = searchField.getText().trim();
+                tableModel.setUsers(controller.search(search));
             }
         });
     }
@@ -128,9 +127,87 @@ public class UsersPanel extends javax.swing.JPanel {
         usernameField.requestFocus();
     }
 
-    private void filterUsers(String search) {
-        search = search.trim();
-        tableModel.setUsers(controller.search(search));
+    private void updateUser(
+        User user,
+        String username,
+        String password,
+        String fullName,
+        String role,
+        boolean active)
+    {
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setFullName(fullName);
+        user.setRole(role);
+        user.setActive(active);
+    }
+
+    private boolean validateForm() {
+        if (!validateUsername()) { return false; }
+        if (!validatePassword()) { return false; }
+        if (!validateFullName()) { return false; }
+        return true;
+    }
+
+    private boolean validateUsername() {
+        String username = usernameField.getText().trim();
+
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre de usuario es obligatorio.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            usernameField.requestFocus();
+            return false;
+        }
+
+        boolean alreadyExists = controller.listAll().stream()
+            .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
+
+        if (alreadyExists) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre ingresado ya existe.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            usernameField.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validatePassword() {
+        if (passwordField.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(
+                this,
+                "La contraseña es obligatoria.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            passwordField.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateFullName() {
+        if (fullNameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre completo es obligatorio",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            fullNameField.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -345,89 +422,6 @@ public class UsersPanel extends javax.swing.JPanel {
         }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
-
-    private void updateUser(
-        User user,
-        String username,
-        String password,
-        String fullName,
-        String role,
-        boolean active)
-    {
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setFullName(fullName);
-        user.setRole(role);
-        user.setActive(active);
-    }
-
-    private boolean validateForm() {
-        if (!validateUsername()) { return false; }
-        if (!validatePassword()) { return false; }
-        if (!validateFullName()) { return false; }
-        return true;
-    }
-
-    private boolean validateUsername() {
-        String username = usernameField.getText().trim();
-
-        if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "El nombre de usuario es obligatorio.",
-                "Validación",
-                JOptionPane.WARNING_MESSAGE
-            );
-            usernameField.requestFocus();
-            return false;
-        }
-
-        boolean alreadyExists = controller.listAll().stream()
-            .anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
-
-        if (alreadyExists) {
-            JOptionPane.showMessageDialog(
-                this,
-                "El nombre ingresado ya existe.",
-                "Validación",
-                JOptionPane.WARNING_MESSAGE
-            );
-            usernameField.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean validatePassword() {
-        if (passwordField.getPassword().length == 0) {
-            JOptionPane.showMessageDialog(
-                this,
-                "La contraseña es obligatoria.",
-                "Validación",
-                JOptionPane.WARNING_MESSAGE
-            );
-            passwordField.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean validateFullName() {
-        if (fullNameField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "El nombre completo es obligatorio",
-                "Validación",
-                JOptionPane.WARNING_MESSAGE
-            );
-            fullNameField.requestFocus();
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox activeCheck;
