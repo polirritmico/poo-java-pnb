@@ -1,0 +1,97 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package cl.edbray.pnb.service;
+
+import cl.edbray.pnb.model.Product;
+import cl.edbray.pnb.repository.IProductRepository;
+import java.util.List;
+
+/**
+ *
+ * @author eduardo
+ */
+public class ProductService {
+    private final IProductRepository repository;
+
+    public ProductService(IProductRepository repository) {
+        this.repository = repository;
+    }
+
+    public void create(String name, String category, String type, double price) {
+        validateProductData(name, category, type, price);
+
+        Product product = new Product();
+        product.setName(name.trim());
+        product.setCategory(category);
+        product.setType(type);
+        product.setPrice(price);
+        product.setActive(true);
+
+        repository.save(product);
+    }
+
+    public void update(
+        int id, String name, String category, String type, double price, boolean active
+    ) {
+        validateProductData(name, category, type, price);
+
+        Product product = repository.searchById(id);
+        if (product == null) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+
+        product.setName(name.trim());
+        product.setCategory(category);
+        product.setType(type);
+        product.setPrice(price);
+        product.setActive(active);
+
+        repository.update(product);
+    }
+
+    public void delete(int id) {
+        Product product = repository.searchById(id);
+        if (product == null) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+
+        repository.setState(id, !product.isActive());
+    }
+
+    public List<Product> listAll() {
+        return repository.listAll();
+    }
+
+    public List<Product> listActives() {
+        return repository.listActive();
+    }
+
+    public List<Product> searchByName(String name) {
+        return repository.searchByName(name);
+    }
+
+    private void validateProductData(
+        String name, String category, String type, double price
+    ) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+
+        if (category == null || category.trim().isEmpty()) {
+            throw new IllegalArgumentException("La categoría es obligatoria.");
+        }
+        if (!category.equals("BEBIDA") && !category.equals("SNACK") && !category.equals("TIEMPO")) {
+            throw new IllegalArgumentException("Categoría inválida. Debe ser BEBIDA, SNACK o TIEMPO");
+        }
+
+        if (type == null || type.trim().isEmpty()) {
+            throw new IllegalArgumentException("El tipo es obligatorio");
+        }
+
+        if (price <= 0) {
+            throw new IllegalArgumentException("El precio debe ser mayor a 0");
+        }
+    }
+}
