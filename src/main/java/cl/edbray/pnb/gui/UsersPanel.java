@@ -232,6 +232,7 @@ public class UsersPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
@@ -257,15 +258,20 @@ public class UsersPanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(900, 500));
         setLayout(new java.awt.BorderLayout(10, 10));
 
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
-        flowLayout1.setAlignOnBaseline(true);
-        searchPanel.setLayout(flowLayout1);
+        searchPanel.setLayout(new java.awt.GridBagLayout());
 
         searchLabel.setText("Buscar:");
-        searchPanel.add(searchLabel);
+        searchLabel.setToolTipText("");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        searchPanel.add(searchLabel, gridBagConstraints);
 
         searchField.setPreferredSize(new java.awt.Dimension(300, 23));
-        searchPanel.add(searchField);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.7;
+        searchPanel.add(searchField, gridBagConstraints);
 
         newUserButton.setText("Nuevo Usuario");
         newUserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -273,7 +279,10 @@ public class UsersPanel extends javax.swing.JPanel {
                 newUserButtonActionPerformed(evt);
             }
         });
-        searchPanel.add(newUserButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 0.3;
+        searchPanel.add(newUserButton, gridBagConstraints);
 
         add(searchPanel, java.awt.BorderLayout.PAGE_START);
 
