@@ -22,14 +22,15 @@ import javax.swing.table.AbstractTableModel;
  * @author eduardo
  */
 public class ProductsPanel extends javax.swing.JPanel {
-    private final ProductsService productsService;
-    private ProductController controller;
+    private final ProductController controller;
 
-    private ProductTableModel tableModel;
+    private ProductTableModel productsTableModel;
     private DefaultComboBoxModel categoriesModel;
     private DefaultComboBoxModel typesModel;
+
     private Product selectedProduct;
 
+    // TODO: move this to a category model?
     private final Map<String, List<String>> typesByCategory = Map.of(
         "BEBIDA", List.of("CAFE", "GASEOSA"),
         "SNACK", List.of("POSTRE", "SALADO"),
@@ -40,7 +41,6 @@ public class ProductsPanel extends javax.swing.JPanel {
      * Creates new form ProductsPanel
      */
     public ProductsPanel() {
-        productsService = new ProductsServiceStub();
         controller = ApplicationContext.getInstance().getProductController();
 
         initComponents();
@@ -52,8 +52,8 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void setupTable() {
-        tableModel = new ProductTableModel();
-        productsTable.setModel(tableModel);
+        productsTableModel = new ProductTableModel();
+        productsTable.setModel(productsTableModel);
         productsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         productsTable.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -76,12 +76,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         categoryComboBox.setModel(categoriesModel);
         categoryComboBox.setSelectedIndex(-1);
 
-    }
-
-    private void updateTypes(String category) {
-        typesModel.removeAllElements();
-        typesByCategory.getOrDefault(category, List.of())
-            .forEach(typesModel::addElement);
     }
 
     private void setupListeners() {
@@ -109,30 +103,47 @@ public class ProductsPanel extends javax.swing.JPanel {
             updateTypes(category);
         });
 
-        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { filter(); }
             @Override public void removeUpdate(DocumentEvent e) { filter(); }
             @Override public void changedUpdate(DocumentEvent e) { }
 
             private void filter() {
-                String search = searchField.getText();
-                List<Product> product = controller.searchByName(search);
-                tableModel.setProducts(product);
+                String search = searchField.getText().trim();
+                productsTableModel.setProducts(controller.searchByName(search));
             }
         });
+    }
+
+    private void loadProducts() {
+        List<Product> products = controller.listAll();
+        productsTableModel.setProducts(products);
+    }
+
+    private void updateTypes(String category) {
+        typesModel.removeAllElements();
+        typesByCategory.getOrDefault(category, List.of())
+            .forEach(typesModel::addElement);
     }
 
     private void selectProductInTable() {
         int selectedRow = productsTable.getSelectedRow();
         if (selectedRow >= 0) {
-            selectedProduct = tableModel.getProductAt(selectedRow);
+            selectedProduct = productsTableModel.getProductAt(selectedRow);
             loadInForm(selectedProduct);
         }
     }
 
-    private void loadProducts() {
-        List<Product> products = controller.listAll();
-        tableModel.setProducts(products);
+    private void cleanForm() {
+        selectedProduct = null;
+        productsTable.clearSelection();
+        nameField.setText("");
+        categoryComboBox.setSelectedIndex(0);
+        typeComboBox.setSelectedIndex(0);
+        priceField.setText("0");
+        enabledCheck.setEnabled(false);
+        deleteButton.setEnabled(false);
+        nameField.requestFocus();
     }
 
     private void loadInForm(Product product) {
@@ -145,23 +156,61 @@ public class ProductsPanel extends javax.swing.JPanel {
         deleteButton.setEnabled(true);
     }
 
-    private void cleanForm() {
-        selectedProduct = null;
-        productsTable.clearSelection();
-
-        nameField.setText("");
-        categoryComboBox.setSelectedIndex(0);
-        //typeComboBox.setSelectedIndex(0);
-        priceField.setText("0");
-        enabledCheck.setEnabled(false);
-        deleteButton.setEnabled(false);
-
-        nameField.requestFocus();
-    }
-
     private void filterProducts(String search) {
         search = search.trim();
-        tableModel.setProducts(productsService.searchByName(search));
+        productsTableModel.setProducts(controller.searchByName(search));
+    }
+
+    private boolean validateForm() {
+        if (nameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre del producto es obligatorio.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            nameField.requestFocus();
+            return false;
+        }
+
+        if (categoryComboBox.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una categoría.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            categoryComboBox.requestFocus();
+            return false;
+        }
+
+        if (priceField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El precio del producto es obligatorio.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            priceField.requestFocus();
+            return false;
+        }
+
+        int price;
+        try {
+            price = Integer.parseInt(getPriceValue());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            priceField.requestFocus();
+            return false;
+        }
+
+        if (price < 0) {
+            JOptionPane.showMessageDialog(this, "El precio no puede ser negativo.",
+                "Validación", JOptionPane.WARNING_MESSAGE);
+            priceField.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private String getPriceValue() {
+        String rawValue = priceField.getText();
+        String cleanValue = rawValue
+            .replace("$", "")
+            .replace(".", "")
+            .replace(",", "")
+            .trim();
+        return cleanValue;
     }
 
     /**
@@ -177,7 +226,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
         categoryFilterLabel = new javax.swing.JLabel();
         categoryFilterComboBox = new javax.swing.JComboBox<>();
         newButton = new javax.swing.JButton();
@@ -226,21 +274,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.weightx = 0.3;
         searchPanel.add(searchField, gridBagConstraints);
-
-        searchButton.setText("🔍");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.1;
-        searchPanel.add(searchButton, gridBagConstraints);
 
         categoryFilterLabel.setText("Filtro por Categoría:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -448,6 +483,8 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
+            boolean newProductMode = (selectedProduct == null);
+
             if (!validateForm()) {
                 return;
             }
@@ -458,15 +495,27 @@ public class ProductsPanel extends javax.swing.JPanel {
             int price = Integer.parseInt(getPriceValue());
             boolean active = enabledCheck.isSelected();
 
-            if (selectedProduct == null) {
+            if (newProductMode) {
                 controller.create(name, category, type, price);
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Producto creado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
             } else {
                 controller.update(selectedProduct.getId(), name, category, type, price, active);
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Producto actualizado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
             }
-            JOptionPane.showMessageDialog(this, "Producto actualizado exitosamente");
 
             cleanForm();
             loadProducts();
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
                 this,
@@ -489,76 +538,35 @@ public class ProductsPanel extends javax.swing.JPanel {
             JOptionPane.YES_NO_OPTION
         );
         if (userChoice == JOptionPane.YES_OPTION) {
-            productsService.delete(selectedProduct.getId());
-            JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente.");
-            cleanForm();
-            loadProducts();
+            try {
+                controller.delete(selectedProduct.getId());
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Producto eliminado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                cleanForm();
+                loadProducts();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al cargar usuarios: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
         if (selectedProduct == null) { return; }
 
-        productsService.changeState(selectedProduct.getId(), !selectedProduct.isActive());
+        controller.changeState(selectedProduct.getId());
         loadInForm(selectedProduct);
         cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed
-
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        filterProducts(searchField.getText());
-    }//GEN-LAST:event_searchButtonActionPerformed
-
-    private boolean validateForm() {
-        if (nameField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre del producto es obligatorio.",
-                "Validación", JOptionPane.WARNING_MESSAGE);
-            nameField.requestFocus();
-            return false;
-        }
-
-        if (categoryComboBox.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una categoría.",
-                "Validación", JOptionPane.WARNING_MESSAGE);
-            categoryComboBox.requestFocus();
-            return false;
-        }
-
-        if (priceField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El precio del producto es obligatorio.",
-                "Validación", JOptionPane.WARNING_MESSAGE);
-            priceField.requestFocus();
-            return false;
-        }
-
-        int price;
-        try {
-            price = Integer.parseInt(getPriceValue());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.",
-                "Validación", JOptionPane.WARNING_MESSAGE);
-            priceField.requestFocus();
-            return false;
-        }
-
-        if (price < 0) {
-            JOptionPane.showMessageDialog(this, "El precio no puede ser negativo.",
-                "Validación", JOptionPane.WARNING_MESSAGE);
-            priceField.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private String getPriceValue() {
-        String rawValue = priceField.getText();
-        String cleanValue = rawValue
-            .replace("$", "")
-            .replace(".", "")
-            .replace(",", "")
-            .trim();
-        return cleanValue;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ContentPanel;
@@ -580,7 +588,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel productDataPanel;
     private javax.swing.JTable productsTable;
     private javax.swing.JButton saveButton;
-    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JPanel searchPanel;
