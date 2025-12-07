@@ -25,6 +25,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private final ProductController controller;
 
     private ProductTableModel productsTableModel;
+    private DefaultComboBoxModel categoriesFilterModel;
     private DefaultComboBoxModel categoriesModel;
     private DefaultComboBoxModel typesModel;
 
@@ -65,15 +66,19 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void setupComboBoxes() {
+        categoriesFilterModel = new DefaultComboBoxModel<>();
         categoriesModel = new DefaultComboBoxModel<>();
         typesModel = new DefaultComboBoxModel<>();
 
+        categoriesFilterModel.addElement("TODOS");
         for (String category : typesByCategory.keySet()) {
             categoriesModel.addElement(category);
+            categoriesFilterModel.addElement(category);
         }
-
-        typeComboBox.setModel(typesModel);
+        categoryFilterComboBox.setModel(categoriesFilterModel);
         categoryComboBox.setModel(categoriesModel);
+        typeComboBox.setModel(typesModel);
+
         categoryComboBox.setSelectedIndex(-1);
 
     }
@@ -93,6 +98,19 @@ public class ProductsPanel extends javax.swing.JPanel {
                     nameField.requestFocus();
                 }
             }
+        });
+
+        categoryFilterComboBox.addActionListener(e -> {
+            String category = (String) categoryFilterComboBox.getSelectedItem();
+            List<Product> matches;
+
+            if (category.equals("TODOS")) {
+                matches = controller.listAll();
+            } else {
+                matches = controller.listByCategory(category);
+            }
+
+            productsTableModel.setProducts(matches);
         });
 
         categoryComboBox.addActionListener(e -> {
@@ -154,11 +172,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         enabledCheck.setSelected(product.isActive());
 
         deleteButton.setEnabled(true);
-    }
-
-    private void filterProducts(String search) {
-        search = search.trim();
-        productsTableModel.setProducts(controller.searchByName(search));
     }
 
     private boolean validateForm() {
