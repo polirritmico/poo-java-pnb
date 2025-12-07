@@ -53,7 +53,7 @@ public class SaleRepositoryMock implements ISaleRepository {
     @Override
     public List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) {
         return sales.stream()
-            .filter(s -> !s.getDateTime().isBefore(from) && !s.getDateTime().isAfter(until))
+            .filter(s -> !s.getDateTime().isBefore(from) && s.getDateTime().isBefore(until))
             .collect(Collectors.toList());
     }
 
