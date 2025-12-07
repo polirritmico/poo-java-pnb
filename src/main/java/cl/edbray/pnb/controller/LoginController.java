@@ -15,7 +15,7 @@ public class LoginController {
     private final UserService userService;
 
     public LoginController(UserService userService){
-        this.userService =userService;
+        this.userService = userService;
     }
 
     public User authenticate(String username, String password) {

@@ -70,15 +70,16 @@ public class UsersPanel extends javax.swing.JPanel {
         });
 
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override public void insertUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
-            @Override public void removeUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
-            @Override public void changedUpdate(javax.swing.event.DocumentEvent ev) { filterUsers(); }
-        });
-    }
+            @Override public void insertUpdate(DocumentEvent e) { filterUsers(); }
+            @Override public void removeUpdate(DocumentEvent de) { filterUsers(); }
+            @Override public void changedUpdate(DocumentEvent de) { }
 
-    private void filterUsers() {
-        String text = searchField.getText();
-        // TODO: implement
+            private void filterUsers() {
+                String search = searchField.getText();
+                List<User> users = controller.search(search);
+                tableModel.setUsers(users);
+            }
+        });
     }
 
     private void selectUserInTable() {
@@ -133,7 +134,6 @@ public class UsersPanel extends javax.swing.JPanel {
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
         newUserButton = new javax.swing.JButton();
         tablePanel = new javax.swing.JScrollPane();
         usersTable = new javax.swing.JTable();
@@ -164,14 +164,6 @@ public class UsersPanel extends javax.swing.JPanel {
 
         searchField.setPreferredSize(new java.awt.Dimension(300, 23));
         searchPanel.add(searchField);
-
-        searchButton.setText(" 🔍 ");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-        searchPanel.add(searchButton);
 
         newUserButton.setText("Nuevo Usuario");
         newUserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -301,10 +293,6 @@ public class UsersPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        filterUsers(searchField.getText());
-    }//GEN-LAST:event_searchButtonActionPerformed
-
     private void updateUser(
         User user,
         String username,
@@ -401,7 +389,6 @@ public class UsersPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JButton saveButton;
-    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JPanel searchPanel;
