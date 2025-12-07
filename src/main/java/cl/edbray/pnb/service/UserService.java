@@ -89,7 +89,7 @@ public class UserService {
         repository.update(user);
     }
 
-    private void delete(int id) {
+    public void delete(int id) {
         User user = repository.searchById(id);
         if (user == null) {
             throw new RuntimeException("Usuario no encontrado");
