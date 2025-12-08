@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public class ProductRepositoryMock implements ProductRepository {
 
-    private List<Product> products;
+    private final List<Product> products;
     private int nextId;
 
     public ProductRepositoryMock() {

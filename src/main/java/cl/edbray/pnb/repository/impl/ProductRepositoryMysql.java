@@ -152,7 +152,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     public Optional<Product> searchById(int id) {
         try (
             Connection conn = DatabaseConnectionFactory.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_NAME);
+            PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID);
         ) {
             ps.setInt(1, id);
 
