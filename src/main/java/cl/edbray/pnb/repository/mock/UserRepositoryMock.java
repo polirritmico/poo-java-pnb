@@ -5,16 +5,17 @@
 package cl.edbray.pnb.repository.mock;
 
 import cl.edbray.pnb.model.User;
-import cl.edbray.pnb.repository.IUserRepository;
+import cl.edbray.pnb.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  *
  * @author eduardo
  */
-public class UserRepositoryMock implements IUserRepository {
+public class UserRepositoryMock implements UserRepository {
 
     private final List<User> users;
     private int nextId;
@@ -33,19 +34,17 @@ public class UserRepositoryMock implements IUserRepository {
     }
 
     @Override
-    public User searchById(int id) {
+    public Optional<User> searchById(int id) {
         return users.stream()
             .filter(u -> u.getId() == id)
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     @Override
-    public User searchByUsername(String username) {
+    public Optional<User> searchByUsername(String username) {
         return users.stream()
             .filter(u -> u.getUsername().equalsIgnoreCase(username))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     @Override
@@ -54,26 +53,18 @@ public class UserRepositoryMock implements IUserRepository {
     }
 
     @Override
-    public List<User> listByRole(String role) {
-        return users.stream()
-            .filter(u -> u.getRole().equalsIgnoreCase(role))
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public int save(User user) {
+    public User save(User user) {
         user.setId(nextId++);
         users.add(user);
-        return user.getId();
+        return user;
     }
 
     @Override
     public void update(User user) {
-        User storedUser = searchById(user.getId());
-        if (storedUser != null) {
+        searchById(user.getId()).ifPresent(storedUser -> {
             int idx = users.indexOf(storedUser);
             users.set(idx, user);
-        }
+        });
     }
 
     @Override
@@ -82,16 +73,22 @@ public class UserRepositoryMock implements IUserRepository {
     }
 
     @Override
-    public boolean usernameExists(String username) {
-        return users.stream()
-            .anyMatch(u -> u.getUsername().equals(username));
+    public Optional<User> authenticate(String username, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public int countActivesByRole(String role) {
-        return (int) users.stream()
-            .filter(u -> u.getRole().equalsIgnoreCase(role))
-            .filter(User::isActive)
-            .count();
+    public List<User> listActive() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void enable(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void disable(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

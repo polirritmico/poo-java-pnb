@@ -6,57 +6,66 @@ package cl.edbray.pnb.repository;
 
 import cl.edbray.pnb.model.User;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrato de operaciones para acceso a datos de Usuario
  *
  * @author eduardo
  */
-public interface IUserRepository {
+public interface UserRepository {
 
     /**
-     * Busca un usuario por su ID
+     * Autentica un usuario por username y password.
      *
-     * @param id ID del usuario
-     * @return Usuario encontrado o null
+     * @param username usuario a autenticar
+     * @param password password a utilizar
+     * @return Optional con el usuario si las credenciales son válidas
      */
-    User searchById(int id);
+    Optional<User> authenticate(String username, String password);
 
     /**
-     * Busca un usuario por su username
-     *
-     * @param username Nombre de usuario a buscar
-     * @return Usuario encontrado o null
-     */
-    User searchByUsername(String username);
-
-    /**
-     * Lista todos los usuarios
+     * Lista todos los usuarios (activos e inactivos)
      *
      * @return Lista de todos los usuarios
      */
     List<User> listAll();
 
     /**
-     * Lista usuarios por rol
+     * Lista todos los usuarios activos.
      *
-     * @param role Rol a filtrar (ADMIN, OPERADOR)
-     * @return Lista de usuarios con ese rol
+     * @return Lista de todos los usuarios activos
      */
-    List<User> listByRole(String role);
+    List<User> listActive();
+
+    /**
+     * Busca un usuario por su ID
+     *
+     * @param id ID del usuario
+     * @return Optional del usuario encontrado
+     */
+    Optional<User> searchById(int id);
+
+    /**
+     * Busca un usuario por su username
+     *
+     * @param username Nombre de usuario a buscar
+     * @return Optional con el usuario o vacío si no existe
+     */
+    Optional<User> searchByUsername(String username);
 
     /**
      * Guarda un nuevo usuario
      *
      * @param user Usuario a guardar
-     * @return ID asignado
+     * @return El usuario creado con su ID asignado
      */
-    int save(User user);
+    User save(User user);
 
     /**
      * Actualiza un usuario existente
      *
-     * @param user Usuario con datos actualizados
+     * @param user Usuario con datos a actualizar
      */
     void update(User user);
 
@@ -68,18 +77,14 @@ public interface IUserRepository {
     void delete(int id);
 
     /**
-     * Verifica si existe un username
-     *
-     * @param username Username a verificar
-     * @return true si existe, false si no
+     * Activa un usuario previamente desactivado
+     * @param id ID del usuario a activar
      */
-    boolean usernameExists(String username);
+    void enable(int id);
 
     /**
-     * Cuenta usuarios activos por rol
-     *
-     * @param role Rol a contar
-     * @return Cantidad de usuarios activos con ese rol
+     * Desactiva un usuario.
+     * @param id ID del usuario a desactivar
      */
-    int countActivesByRole(String role);
+    void disable(int id);
 }

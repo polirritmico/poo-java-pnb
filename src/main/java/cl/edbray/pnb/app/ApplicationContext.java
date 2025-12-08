@@ -8,15 +8,15 @@ import cl.edbray.pnb.controller.LoginController;
 import cl.edbray.pnb.controller.ProductController;
 import cl.edbray.pnb.controller.SaleController;
 import cl.edbray.pnb.controller.UserController;
-import cl.edbray.pnb.repository.IProductRepository;
-import cl.edbray.pnb.repository.ISaleRepository;
-import cl.edbray.pnb.repository.IUserRepository;
 import cl.edbray.pnb.repository.mock.ProductRepositoryMock;
 import cl.edbray.pnb.repository.mock.SaleRepositoryMock;
 import cl.edbray.pnb.repository.mock.UserRepositoryMock;
 import cl.edbray.pnb.service.ProductService;
 import cl.edbray.pnb.service.SaleService;
 import cl.edbray.pnb.service.UserService;
+import cl.edbray.pnb.repository.UserRepository;
+import cl.edbray.pnb.repository.SaleRepository;
+import cl.edbray.pnb.repository.ProductRepository;
 
 /**
  * Contenedor de Inversión de Control (IoC) manual Responsable de:
@@ -31,9 +31,9 @@ public class ApplicationContext {
 
     private static ApplicationContext instance;
 
-    private IUserRepository userRepository;
-    private IProductRepository productRepository;
-    private ISaleRepository saleRepository;
+    private UserRepository userRepository;
+    private ProductRepository productRepository;
+    private SaleRepository saleRepository;
 
     private UserService userService;
     private ProductService productService;

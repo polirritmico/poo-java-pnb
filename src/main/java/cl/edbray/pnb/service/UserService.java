@@ -5,9 +5,10 @@
 package cl.edbray.pnb.service;
 
 import cl.edbray.pnb.model.User;
-import cl.edbray.pnb.repository.IUserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import cl.edbray.pnb.repository.UserRepository;
+import java.util.Optional;
 
 /**
  *
@@ -15,9 +16,9 @@ import java.util.stream.Collectors;
  */
 public class UserService {
 
-    private final IUserRepository repository;
+    private final UserRepository repository;
 
-    public UserService(IUserRepository repository) {
+    public UserService(UserRepository repository) {
         this.repository = repository;
     }
 
@@ -29,11 +30,8 @@ public class UserService {
             throw new IllegalArgumentException("La contraseña es obligatoria.");
         }
 
-        User user = repository.searchByUsername(username.trim());
-
-        if (user == null) {
-            throw new IllegalArgumentException("Credenciales inválidas.");
-        }
+        User user = repository.searchByUsername(username.trim())
+            .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas."));
 
         if (!user.isActive()) {
             throw new IllegalArgumentException("Usuario inactivo. Contacta con el administrador.");
@@ -50,9 +48,8 @@ public class UserService {
     public void create(String username, String password, String fullName, String role) {
         validateUserData(username, password, fullName, role);
 
-        if (repository.usernameExists(username)) {
-            throw new IllegalArgumentException("El usuario '" + username + "' ya existe.");
-        }
+        repository.searchByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("El usuario '" + username + "' ya existe."));
 
         User user = new User();
         user.setUsername(username.trim().toLowerCase());
@@ -70,14 +67,14 @@ public class UserService {
     ) {
         validateUserData(username, password, fullName, role);
 
-        User user = repository.searchById(id);
-        if (user == null) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
+        User user = repository.searchById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!user.getUsername().equals(username) && repository.usernameExists(username)) {
-            throw new RuntimeException("El username '" + username + "' ya existe.");
-        }
+        repository.searchByUsername(username).ifPresent(u -> {
+            if (u.getId() != id) {
+                throw new RuntimeException("El username '" + username + "' ya existe.");
+            }
+        });
 
         user.setUsername(username.trim().toLowerCase());
         if (password != null && !password.trim().isEmpty()) {
@@ -91,17 +88,17 @@ public class UserService {
     }
 
     public void delete(int id) {
-        User user = repository.searchById(id);
-        if (user == null) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
+        User user = repository.searchById(id).orElseThrow(
+            () -> new RuntimeException("No se puede eliminar el último administrador activo")
+        );
 
         if (user.getRole().equals("ADMIN") && user.isActive()) {
-            int activeAdministrators = repository.countActivesByRole("ADMIN");
-            if (activeAdministrators <= 1) {
-                throw new RuntimeException(
-                    "No se puede eliminar el último administrador activo"
-                );
+            long activeAdmins = repository.listActive().stream()
+                .filter(u -> u.getRole().equals("ADMIN"))
+                .count();
+
+            if (activeAdmins <= 1) {
+                throw new RuntimeException("No se puede eliminar el último administrador activo");
             }
         }
 

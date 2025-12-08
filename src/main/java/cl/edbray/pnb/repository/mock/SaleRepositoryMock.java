@@ -5,18 +5,18 @@
 package cl.edbray.pnb.repository.mock;
 
 import cl.edbray.pnb.model.Sale;
-import cl.edbray.pnb.repository.ISaleRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import cl.edbray.pnb.repository.SaleRepository;
 
 /**
  *
  * @author eduardo
  */
-public class SaleRepositoryMock implements ISaleRepository {
+public class SaleRepositoryMock implements SaleRepository {
 
     private final List<Sale> sales;
     private int nextId;

@@ -5,16 +5,16 @@
 package cl.edbray.pnb.repository.mock;
 
 import cl.edbray.pnb.model.Product;
-import cl.edbray.pnb.repository.IProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import cl.edbray.pnb.repository.ProductRepository;
 
 /**
  *
  * @author eduardo
  */
-public class ProductRepositoryMock implements IProductRepository {
+public class ProductRepositoryMock implements ProductRepository {
 
     private List<Product> products;
     private int nextId;

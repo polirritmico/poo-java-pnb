@@ -5,9 +5,9 @@
 package cl.edbray.pnb.service;
 
 import cl.edbray.pnb.model.Product;
-import cl.edbray.pnb.repository.IProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import cl.edbray.pnb.repository.ProductRepository;
 
 /**
  *
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
  */
 public class ProductService {
 
-    private final IProductRepository repository;
+    private final ProductRepository repository;
 
-    public ProductService(IProductRepository repository) {
+    public ProductService(ProductRepository repository) {
         this.repository = repository;
     }
 

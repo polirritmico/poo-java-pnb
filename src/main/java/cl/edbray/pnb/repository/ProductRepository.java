@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author eduardo
  */
-public interface IProductRepository {
+public interface ProductRepository {
 
     /**
      * Busca un producto por su ID

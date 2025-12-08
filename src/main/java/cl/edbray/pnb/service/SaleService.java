@@ -5,9 +5,9 @@
 package cl.edbray.pnb.service;
 
 import cl.edbray.pnb.model.Sale;
-import cl.edbray.pnb.repository.ISaleRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import cl.edbray.pnb.repository.SaleRepository;
 
 /**
  *
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class SaleService {
 
-    private final ISaleRepository repository;
+    private final SaleRepository repository;
 
-    public SaleService(ISaleRepository repository) {
+    public SaleService(SaleRepository repository) {
         this.repository = repository;
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author eduardo
  */
-public interface ISaleRepository {
+public interface SaleRepository {
 
     /**
      * Busca una venta por su ID.
