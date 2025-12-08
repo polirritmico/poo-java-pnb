@@ -8,15 +8,15 @@ import cl.edbray.pnb.controller.LoginController;
 import cl.edbray.pnb.controller.ProductController;
 import cl.edbray.pnb.controller.SaleController;
 import cl.edbray.pnb.controller.UserController;
-import cl.edbray.pnb.repository.mock.ProductRepositoryMock;
-import cl.edbray.pnb.repository.mock.SaleRepositoryMock;
-import cl.edbray.pnb.repository.mock.UserRepositoryMock;
 import cl.edbray.pnb.service.ProductService;
 import cl.edbray.pnb.service.SaleService;
 import cl.edbray.pnb.service.UserService;
 import cl.edbray.pnb.repository.UserRepository;
 import cl.edbray.pnb.repository.SaleRepository;
 import cl.edbray.pnb.repository.ProductRepository;
+import cl.edbray.pnb.repository.impl.ProductRepositoryMysql;
+import cl.edbray.pnb.repository.impl.SaleRepositoryMysql;
+import cl.edbray.pnb.repository.impl.UserRepositoryMysql;
 
 /**
  * Contenedor de Inversión de Control (IoC) manual Responsable de:
@@ -68,9 +68,9 @@ public class ApplicationContext {
     private void initRepositories() {
         System.out.println("  📦 Creando repositorios Mock...");
 
-        userRepository = new UserRepositoryMock();
-        productRepository = new ProductRepositoryMock();
-        saleRepository = new SaleRepositoryMock();
+        userRepository = new UserRepositoryMysql();
+        productRepository = new ProductRepositoryMysql();
+        saleRepository = new SaleRepositoryMysql();
 
         System.out.println("  ✓ Repositorios creados");
     }
