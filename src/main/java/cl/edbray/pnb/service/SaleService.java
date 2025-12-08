@@ -31,7 +31,7 @@ public class SaleService {
 
         Sale sale = new Sale();
         sale.setDateTime(LocalDateTime.now());
-        sale.setId(userId);
+        sale.setUserId(userId);
         sale.setUserName(username);
         sale.setTotal(total);
         sale.setState("ACTIVA");
