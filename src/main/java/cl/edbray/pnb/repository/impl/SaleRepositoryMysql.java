@@ -64,7 +64,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public Optional<Sale> searchById(int id) throws SQLException {
+    public Optional<Sale> searchById(int id) {
         try (
             Connection conn = DatabaseConnectionFactory.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID);
@@ -86,7 +86,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public List<Sale> listAll() throws SQLException {
+    public List<Sale> listAll() {
         List<Sale> sales = new ArrayList<>();
 
         try (
@@ -106,7 +106,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) throws SQLException {
+    public List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) {
         // TODO: validate this
         List<Sale> sales = new ArrayList<>();
         Timestamp fromTS = Timestamp.valueOf(from);
@@ -134,7 +134,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public List<Sale> listToday() throws SQLException {
+    public List<Sale> listToday() {
         List<Sale> sales = new ArrayList<>();
 
         try (
@@ -155,7 +155,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public int save(Sale sale) throws SQLException {
+    public int save(Sale sale) {
         try (
             Connection conn = DatabaseConnectionFactory.getConnection();
             PreparedStatement ps = conn.prepareStatement(
@@ -192,7 +192,7 @@ public class SaleRepositoryMysql implements SaleRepository{
     }
 
     @Override
-    public void cancel(int id) throws SQLException {
+    public void cancel(int id) {
         try (
             Connection conn = DatabaseConnectionFactory.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_CANCEL);
@@ -210,8 +210,4 @@ public class SaleRepositoryMysql implements SaleRepository{
             throw new RuntimeException("Error al cancelar venta", e);
         }
     }
-
-
-
-
 }

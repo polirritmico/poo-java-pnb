@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import cl.edbray.pnb.repository.SaleRepository;
+import java.util.Optional;
 
 /**
  *
@@ -46,11 +46,10 @@ public class SaleRepositoryMock implements SaleRepository {
     }
 
     @Override
-    public Sale searchById(int id) {
+    public Optional<Sale> searchById(int id) {
         return sales.stream()
             .filter(s -> s.getId() == id)
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class SaleRepositoryMock implements SaleRepository {
     public List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) {
         return sales.stream()
             .filter(s -> !s.getDateTime().isBefore(from) && s.getDateTime().isBefore(until))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -70,13 +69,6 @@ public class SaleRepositoryMock implements SaleRepository {
         LocalDateTime dayStart = LocalDate.now().atStartOfDay();
         LocalDateTime dayEnd = dayStart.plusDays(1);
         return listByDateRange(dayStart, dayEnd);
-    }
-
-    @Override
-    public List<Sale> listByUser(int userId) {
-        return sales.stream()
-            .filter(s -> s.getUserId() == userId)
-            .collect(Collectors.toList());
     }
 
     @Override
@@ -91,25 +83,8 @@ public class SaleRepositoryMock implements SaleRepository {
 
     @Override
     public void cancel(int id) {
-        Sale sale = searchById(id);
-        if (sale != null) {
-            sale.setState("ANULADA");
-        }
-    }
-
-    @Override
-    public double calculateTotalByDateRange(LocalDateTime from, LocalDateTime until) {
-        return listByDateRange(from, until).stream()
-            .filter(s -> "ACTIVA".equals(s.getState()))
-            .mapToDouble(Sale::getTotal)
-            .sum();
-    }
-
-    @Override
-    public double calculateTodayTotal() {
-        return listToday().stream()
-            .filter(s -> "ACTIVA".equals(s.getState()))
-            .mapToDouble(Sale::getTotal)
-            .sum();
+        searchById(id).ifPresent(s -> {
+            s.setState("ANULADA");
+        });
     }
 }

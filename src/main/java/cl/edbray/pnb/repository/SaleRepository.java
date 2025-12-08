@@ -23,14 +23,14 @@ public interface SaleRepository {
      * @param id ID de la venta
      * @return Venta encontrada
      */
-    Optional<Sale> searchById(int id) throws SQLException;
+    Optional<Sale> searchById(int id);
 
     /**
      * Lista todas las ventas.
      *
      * @return Lista de todas las ventas
      */
-    List<Sale> listAll() throws SQLException;
+    List<Sale> listAll();
 
     /**
      * Lista ventas activas dentro de un rango de fechas.
@@ -39,14 +39,14 @@ public interface SaleRepository {
      * @param until Fecha y hora de fin (inclusive)
      * @return Lista de ventas activas en el rango especificado
      */
-    List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) throws SQLException;
+    List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until);
 
     /**
      * Lista ventas del día actual.
      *
      * @return Lista de ventas realizadas hoy
      */
-    List<Sale> listToday() throws SQLException;
+    List<Sale> listToday();
 
     /**
      * Guarda una nueva venta.
@@ -54,12 +54,12 @@ public interface SaleRepository {
      * @param sale Venta a guardar
      * @return ID asignado a la venta
      */
-    int save(Sale sale) throws SQLException;
+    int save(Sale sale);
 
     /**
      * Anula una venta (cambia estado a ANULADA).
      *
      * @param id ID de la venta
      */
-    void cancel(int id) throws SQLException;
+    void cancel(int id);
 }

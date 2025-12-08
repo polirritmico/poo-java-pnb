@@ -40,15 +40,6 @@ public class SaleService {
     }
 
     public void cancel(int id) {
-        Sale sale = repository.searchById(id);
-        if (sale == null) {
-            throw new RuntimeException("Venta no encontrada");
-        }
-
-        if ("ANULADA".equals(sale.getState())) {
-            throw new RuntimeException("La venta ya está anulada");
-        }
-
         repository.cancel(id);
     }
 
@@ -65,10 +56,14 @@ public class SaleService {
     }
 
     public double calculateTodayTotal() {
-        return repository.calculateTodayTotal();
+        return repository.listToday().stream()
+            .mapToDouble(Sale::getTotal)
+            .sum();
     }
 
     public double calculateTotalByRange(LocalDateTime from, LocalDateTime until) {
-        return repository.calculateTotalByDateRange(from, until);
+        return repository.listByDateRange(from, until).stream()
+            .mapToDouble(Sale::getTotal)
+            .sum();
     }
 }
