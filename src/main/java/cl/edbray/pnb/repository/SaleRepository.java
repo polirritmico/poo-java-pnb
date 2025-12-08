@@ -5,8 +5,10 @@
 package cl.edbray.pnb.repository;
 
 import cl.edbray.pnb.model.Sale;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrato de operaciones para acceso a datos de Venta
@@ -19,40 +21,32 @@ public interface SaleRepository {
      * Busca una venta por su ID.
      *
      * @param id ID de la venta
-     * @return Venta encontrada o null
+     * @return Venta encontrada
      */
-    Sale searchById(int id);
+    Optional<Sale> searchById(int id) throws SQLException;
 
     /**
      * Lista todas las ventas.
      *
      * @return Lista de todas las ventas
      */
-    List<Sale> listAll();
+    List<Sale> listAll() throws SQLException;
 
     /**
-     * Lista ventas dentro de un rango de fechas.
+     * Lista ventas activas dentro de un rango de fechas.
      *
      * @param from Fecha y hora de inicio (inclusive)
      * @param until Fecha y hora de fin (inclusive)
-     * @return Lista de ventas en el rango especificado
+     * @return Lista de ventas activas en el rango especificado
      */
-    List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until);
+    List<Sale> listByDateRange(LocalDateTime from, LocalDateTime until) throws SQLException;
 
     /**
      * Lista ventas del día actual.
      *
      * @return Lista de ventas realizadas hoy
      */
-    List<Sale> listToday();
-
-    /**
-     * Lista ventas realizadas por un usuario específico.
-     *
-     * @param userId ID del usuario
-     * @return Lista de ventas del usuario
-     */
-    List<Sale> listByUser(int userId);
+    List<Sale> listToday() throws SQLException;
 
     /**
      * Guarda una nueva venta.
@@ -60,28 +54,12 @@ public interface SaleRepository {
      * @param sale Venta a guardar
      * @return ID asignado a la venta
      */
-    int save(Sale sale);
+    int save(Sale sale) throws SQLException;
 
     /**
      * Anula una venta (cambia estado a ANULADA).
      *
      * @param id ID de la venta
      */
-    void cancel(int id);
-
-    /**
-     * Calcula el total de ventas activas dentro de un rango de fechas.
-     *
-     * @param from Fecha y hora de inicio (inclusive)
-     * @param until Fecha y hora de fin (inclusive)
-     * @return Total de ventas en pesos
-     */
-    double calculateTotalByDateRange(LocalDateTime from, LocalDateTime until);
-
-    /**
-     * Calcula el total de ventas activas del día actual.
-     *
-     * @return Total de ventas de hoy en pesos
-     */
-    double calculateTodayTotal();
+    void cancel(int id) throws SQLException;
 }
