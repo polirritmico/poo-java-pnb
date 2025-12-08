@@ -34,10 +34,10 @@ public class TestDBConnection {
         try (
             Connection conn = DatabaseConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id, username, role FROM usuario")
+            ResultSet rs = stmt.executeQuery("SELECT id, username, rol FROM usuario")
         ) {
             System.out.println("\nUsuarios en la base de datos:");
-            System.out.println("ID | Username       | Role");
+            System.out.println("ID | Username       | Rol");
             System.out.println("---|----------------|----------");
 
             int count = 0;
@@ -45,8 +45,8 @@ public class TestDBConnection {
                 count++;
                 int id = rs.getInt("id");
                 String username = rs.getString("username");
-                String role = rs.getString("role");
-                System.out.printf("%-3d| %-15s| %s%n", id, username, role);
+                String rol = rs.getString("rol");
+                System.out.printf("%-3d| %-15s| %s%n", id, username, rol);
             }
 
             System.out.println("\n✅ Total de usuarios: " + count);

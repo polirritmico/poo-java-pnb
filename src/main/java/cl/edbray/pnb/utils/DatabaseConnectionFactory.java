@@ -37,11 +37,11 @@ public class DatabaseConnectionFactory {
             Class.forName(driver);
 
             System.out.println("✅ Configuración de base de datos cargada correctamente");
-            System.out.println("   URL: " + url);
-            System.out.println("   Usuario: " + username);
+            System.out.println("   URL: '" + url + "'");
+            System.out.println("   Usuario: '" + username + "'");
 
         } catch (IOException e) {
-            System.err.println("❌ Error al cargar application.properties");
+            System.err.println("\n❌ Error al cargar application.properties");
             e.printStackTrace();
             throw new RuntimeException("No se pudo cargar la configuración de BD", e);
         } catch (ClassNotFoundException e) {
