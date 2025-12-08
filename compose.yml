@@ -1,0 +1,35 @@
+services:
+  db:
+    container_name: pixel-and-beans-db
+    image: mysql:oraclelinux9
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: java-poo-pnb
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - labdevops
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: java-poo-pnb
+    ports:
+      - "8080:80"
+    networks:
+      - labdevops
+
+networks:
+  labdevops:
+    driver: bridge
+
+volumes:
+  mysql-data:
