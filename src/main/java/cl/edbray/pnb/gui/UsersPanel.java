@@ -128,7 +128,7 @@ public class UsersPanel extends javax.swing.JPanel {
 
     private void loadInForm(User user) {
         usernameField.setText(user.getUsername());
-        passwordField.setText(user.getPassword());
+        passwordField.setText("");
         fullNameField.setText(user.getFullName());
         roleComboBox.setSelectedItem(user.getRole());
         activeCheck.setSelected(user.isActive());
@@ -157,7 +157,7 @@ public class UsersPanel extends javax.swing.JPanel {
         if (!validateUsernameIsAvaliable()) {
             return false;
         }
-        if (!validatePassword()) {
+        if (!validateNewUserPassword()) {
             return false;
         }
         if (!validateFullName()) {
@@ -170,7 +170,7 @@ public class UsersPanel extends javax.swing.JPanel {
         if (!validateUsernameLength()) {
             return false;
         }
-        if (!validatePassword()) {
+        if (!validatePasswordUpdate()) {
             return false;
         }
         if (!validateFullName()) {
@@ -216,11 +216,35 @@ public class UsersPanel extends javax.swing.JPanel {
         return true;
     }
 
-    private boolean validatePassword() {
+    private boolean validateNewUserPassword() {
+        return validatePassword(false);
+    }
+
+    private boolean validatePasswordUpdate() {
+        return validatePassword(true);
+    }
+
+    private boolean validatePassword(boolean update) {
+        int minCharacterCount = 6;
+
+        if (update && passwordField.getPassword().length == 0) {
+            return true;
+        }
+
         if (passwordField.getPassword().length == 0) {
             JOptionPane.showMessageDialog(
                 this,
                 "La contraseña es obligatoria.",
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+            );
+            passwordField.requestFocus();
+            return false;
+        }
+        if (passwordField.getPassword().length < minCharacterCount) {
+            JOptionPane.showMessageDialog(
+                this,
+                "La contraseña debe ser de mínimo " + minCharacterCount + " caracteres.",
                 "Validación",
                 JOptionPane.WARNING_MESSAGE
             );

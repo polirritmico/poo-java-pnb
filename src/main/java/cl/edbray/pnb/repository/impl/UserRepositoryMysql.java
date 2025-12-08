@@ -38,16 +38,22 @@ public class UserRepositoryMysql implements UserRepository {
         SQL_SELECT_ALL + " WHERE username = ? AND password = ? AND activo = TRUE";
 
     private static final String SQL_INSERT =
-        "INSERT INTO usuario (username, password, nombre_completo, rol, activo) VALUES (?, ?, ?, ?, ?)";
-
-    private static final String SQL_UPDATE =
-        "UPDATE usuario SET username = ?, password = ?, nombre_completo = ?, rol = ?, activo = ? WHERE id = ?";
+        "INSERT INTO usuario "
+        + "(username, password, nombre_completo, rol, activo) "
+        + "VALUES (?, ?, ?, ?, ?)";
 
     private static final String SQL_DELETE =
         "DELETE FROM usuario WHERE id = ?";
 
+    private static final String SQL_UPDATE =
+            "UPDATE usuario SET "
+            + "username = ?, password = ?, nombre_completo = ?, rol = ?, activo = ? "
+            + "WHERE id = ?";
+
     private static final String SQL_UPDATE_STATE =
         "UPDATE usuario SET activo = ? WHERE id = ?";
+
+    // -------------------------------------------------------------------------
 
     private User mapUser(ResultSet rs) throws SQLException {
         User user = new User();
@@ -209,16 +215,16 @@ public class UserRepositoryMysql implements UserRepository {
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)
         ) {
             ps.setString(1, user.getUsername());
-            // TODO: add hash
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getFullName());
-            // TODO: use enum
-            // ps.setString(4, user.getRole().name());
-            ps.setString(4, user.getRole());
+            ps.setString(4, user.getRole()); // TODO: use enum
             ps.setBoolean(5, user.isActive());
             ps.setInt(6, user.getId());
 
-            ps.executeUpdate();
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Usuario no encontrado: " + user.getId());
+            }
 
         } catch (SQLException e) {
             System.err.println("Error al actualizar usuario ID: " + user.getId());
@@ -234,7 +240,10 @@ public class UserRepositoryMysql implements UserRepository {
             PreparedStatement ps = conn.prepareStatement(SQL_DELETE)
         ) {
             ps.setInt(1, id);
-            ps.executeUpdate();
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Usuario no encontrado: " + id);
+            }
 
         } catch (SQLException e) {
             System.err.println("Error al eliminar usuario ID: " + id);

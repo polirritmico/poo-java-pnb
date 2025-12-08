@@ -8,7 +8,7 @@ import cl.edbray.pnb.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 import cl.edbray.pnb.repository.UserRepository;
-import java.util.Optional;
+import cl.edbray.pnb.utils.PasswordHasher;
 
 /**
  *
@@ -37,8 +37,7 @@ public class UserService {
             throw new IllegalArgumentException("Usuario inactivo. Contacta con el administrador.");
         }
 
-        // TODO: use hash
-        if (!user.getPassword().equals(password)) {
+        if (!PasswordHasher.verifyPassword(password, user.getPassword())) {
             throw new IllegalArgumentException("Credenciales inválidas.");
         }
 
@@ -46,7 +45,7 @@ public class UserService {
     }
 
     public void create(String username, String password, String fullName, String role) {
-        validateUserData(username, password, fullName, role);
+        validateInputData(username, password, fullName, role);
 
         if (repository.searchByUsername(username).isPresent()) {
             throw new IllegalArgumentException("El usuario '" + username + "' ya existe.");
@@ -54,8 +53,7 @@ public class UserService {
 
         User user = new User();
         user.setUsername(username.trim().toLowerCase());
-        // TODO: use hash
-        user.setPassword(password);
+        user.setPassword(PasswordHasher.hashPassword(password));
         user.setFullName(fullName.trim());
         user.setRole(role);
         user.setActive(true);
@@ -66,22 +64,27 @@ public class UserService {
     public void update(
         int id, String username, String password, String fullName, String role, boolean active
     ) {
-        validateUserData(username, password, fullName, role);
+        validateInputData(username, password, fullName, role);
 
         User user = repository.searchById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
         repository.searchByUsername(username).ifPresent(u -> {
             if (u.getId() != id) {
-                throw new RuntimeException("El username '" + username + "' ya existe.");
+                throw new IllegalArgumentException("El username '" + username + "' ya existe.");
             }
         });
 
-        user.setUsername(username.trim().toLowerCase());
-        if (password != null && !password.trim().isEmpty()) {
-            user.setPassword(password);
+        boolean newPassword = password.length() > 0;
+        if (newPassword) {
+            user.setPassword(PasswordHasher.hashPassword(password));
+        } else {
+            user.setPassword(user.getPassword());
         }
+
+        user.setUsername(username.trim().toLowerCase());
         user.setFullName(fullName.trim());
+        //user.setPassword(password);
         user.setRole(role);
         user.setActive(active);
 
@@ -128,7 +131,7 @@ public class UserService {
             .collect(Collectors.toList());
     }
 
-    private void validateUserData(String username, String password, String fullName, String role) {
+    private void validateInputData(String username, String password, String fullName, String role) {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de usuario es obligatorio.");
         }
@@ -136,10 +139,7 @@ public class UserService {
             throw new IllegalArgumentException("El nombre de usuario debe tener al menos 4 caracteres.");
         }
 
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña es obligatoria.");
-        }
-        if (password.length() < 6) {
+        if (!password.isBlank() && password.length() < 6) {
             throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres");
         }
 
