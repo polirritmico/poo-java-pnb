@@ -216,6 +216,7 @@ public class UserRepositoryMysql implements UserRepository {
             // ps.setString(4, user.getRole().name());
             ps.setString(4, user.getRole());
             ps.setBoolean(5, user.isActive());
+            ps.setInt(6, user.getId());
 
             ps.executeUpdate();
 
