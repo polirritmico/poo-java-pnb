@@ -82,7 +82,7 @@ public class ReportsPanel extends javax.swing.JPanel {
             case 3 ->
                 new LocalDateTime[]{today.minusMonths(1), todayEnd};
             case 4 ->
-                new LocalDateTime[]{LocalDateTime.MIN, todayEnd};
+                new LocalDateTime[]{LocalDateTime.of(2020, 1, 1, 0, 0), todayEnd};
             default ->
                 new LocalDateTime[]{today, todayEnd};
         };
