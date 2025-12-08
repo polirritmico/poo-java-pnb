@@ -58,7 +58,6 @@ public class SaleRepositoryMysql implements SaleRepository{
         sale.setState(rs.getString("estado"));
         // TODO: add new attribute?
         // sale.setComments(rs.getString("observaciones"));
-        sale.setUserName(rs.getString("username"));
 
         return sale;
     }

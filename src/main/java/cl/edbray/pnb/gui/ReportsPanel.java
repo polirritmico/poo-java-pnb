@@ -248,10 +248,8 @@ public class ReportsPanel extends javax.swing.JPanel {
                 case 1 ->
                     s.getDateTime().format(formatter);
                 case 2 ->
-                    s.getUserName();
-                case 3 ->
                     String.format("$%,.0f", s.getTotal());
-                case 4 ->
+                case 3 ->
                     s.getState();
                 default ->
                     null;

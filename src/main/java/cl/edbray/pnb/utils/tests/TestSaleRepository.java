@@ -30,11 +30,10 @@ public class TestSaleRepository {
         System.out.println("Total: " + hoy.size() + " ventas");
 
         hoy.forEach(v -> {
-            System.out.printf("  #%d - %s - $%.2f - %s%n",
+            System.out.printf("  #%d - %s - $%.2f",
                 v.getId(),
                 v.getDateTime().format(fmt),
-                v.getTotal(),
-                v.getUserName());
+                v.getTotal());
         });
 
         System.out.println("\n-------------------------------------------\n");
