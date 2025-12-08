@@ -39,10 +39,10 @@ public class ProductRepositoryMysql implements ProductRepository {
         SQL_SELECT_ALL + " WHERE nombre LIKE ? ORDER BY nombre";
 
     private static final String SQL_INSERT =
-        "INSERT INTO producto (nombre, categoria, tipo, descripcion, precio, activo) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO producto (nombre, categoria, tipo, precio, activo) VALUES (?, ?, ?, ?, ?)";
 
     private static final String SQL_UPDATE =
-        "UPDATE producto SET nombre = ?, categoria = ?, tipo = ?, descripcion = ?, precio = ?, activo = ? WHERE id = ?";
+        "UPDATE producto SET nombre = ?, categoria = ?, tipo = ?, precio = ?, activo = ? WHERE id = ?";
 
     private static final String SQL_DELETE =
         "DELETE FROM producto WHERE id = ?";
@@ -180,8 +180,8 @@ public class ProductRepositoryMysql implements ProductRepository {
             ps.setString(3, product.getType());
             // TODO: implement
             //ps.setString(4, product.getDescription());
-            ps.setDouble(5, product.getPrice());
-            ps.setBoolean(6, product.isActive());
+            ps.setDouble(4, product.getPrice());
+            ps.setBoolean(5, product.isActive());
 
             int rowsAffected = ps.executeUpdate();
 
