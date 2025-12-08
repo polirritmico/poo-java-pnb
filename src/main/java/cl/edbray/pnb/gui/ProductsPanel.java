@@ -571,6 +571,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         } else {
             controller.enable(selectedProduct.getId());
         }
+        loadProducts();
         loadInForm(selectedProduct);
         cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed
