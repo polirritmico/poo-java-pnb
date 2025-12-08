@@ -213,9 +213,9 @@ public class ProductRepositoryMysql implements ProductRepository {
             ps.setString(3, product.getType());
             // TODO: implement
             //ps.setString(4, product.getDescription());
-            ps.setDouble(5, product.getPrice());
-            ps.setBoolean(6, product.isActive());
-            ps.setInt(7, product.getId());
+            ps.setDouble(4, product.getPrice());
+            ps.setBoolean(5, product.isActive());
+            ps.setInt(6, product.getId());
 
             ps.executeUpdate();
 
