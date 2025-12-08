@@ -36,7 +36,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private final Map<String, List<String>> typesByCategory = Map.of(
         "BEBIDA", List.of("CAFE", "GASEOSA"),
         "SNACK", List.of("POSTRE", "SALADO"),
-        "TIEMPO", List.of("ARCADE")
+        "TIEMPO_ARCADE", List.of("ARCADE")
     );
 
     /**

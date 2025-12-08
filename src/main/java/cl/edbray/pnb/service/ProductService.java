@@ -91,8 +91,8 @@ public class ProductService {
         if (category == null || category.trim().isEmpty()) {
             throw new IllegalArgumentException("La categoría es obligatoria.");
         }
-        if (!category.equals("BEBIDA") && !category.equals("SNACK") && !category.equals("TIEMPO")) {
-            throw new IllegalArgumentException("Categoría inválida. Debe ser BEBIDA, SNACK o TIEMPO");
+        if (!category.equals("BEBIDA") && !category.equals("SNACK") && !category.equals("TIEMPO_ARCADE")) {
+            throw new IllegalArgumentException("Categoría inválida. Debe ser BEBIDA, SNACK o TIEMPO_ARCADE");
         }
 
         if (type == null || type.trim().isEmpty()) {

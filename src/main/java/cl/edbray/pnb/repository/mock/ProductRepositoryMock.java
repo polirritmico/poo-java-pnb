@@ -41,10 +41,10 @@ public class ProductRepositoryMock implements ProductRepository {
         products.add(new Product(nextId++, "Nachos", "SNACK", "SALADO", 2200, true));
 
         // Tiempo de Arcade
-        products.add(new Product(nextId++, "15 minutos", "TIEMPO", "ARCADE", 1500, true));
-        products.add(new Product(nextId++, "30 minutos", "TIEMPO", "ARCADE", 2500, true));
-        products.add(new Product(nextId++, "1 hora", "TIEMPO", "ARCADE", 4000, true));
-        products.add(new Product(nextId++, "2 horas", "TIEMPO", "ARCADE", 7000, true));
+        products.add(new Product(nextId++, "15 minutos", "TIEMPO_ARCADE", "ARCADE", 1500, true));
+        products.add(new Product(nextId++, "30 minutos", "TIEMPO_ARCADE", "ARCADE", 2500, true));
+        products.add(new Product(nextId++, "1 hora", "TIEMPO_ARCADE", "ARCADE", 4000, true));
+        products.add(new Product(nextId++, "2 horas", "TIEMPO_ARCADE", "ARCADE", 7000, true));
 
     }
 

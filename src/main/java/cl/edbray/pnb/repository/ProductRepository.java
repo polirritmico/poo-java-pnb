@@ -32,7 +32,7 @@ public interface ProductRepository {
     /**
      * Buscar productos por categoría
      *
-     * @param category BEBIDA, SNACK, TIEMPO
+     * @param category BEBIDA, SNACK, TIEMPO_ARCADE
      * @return lista con los productos encontrados de la categoria ingresada
      */
     List<Product> searchByCategory(String category);
