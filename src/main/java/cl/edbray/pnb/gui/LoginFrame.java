@@ -14,6 +14,9 @@ import javax.swing.JOptionPane;
  * @author eduardo
  */
 public class LoginFrame extends javax.swing.JFrame {
+
+    public final boolean DEBUG_MODE = false;
+
     private final LoginController controller;
 
     /**
@@ -201,15 +204,18 @@ public class LoginFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_usernameFieldActionPerformed
-
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_registerButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        if (DEBUG_MODE) {
+            startMain(
+                ApplicationContext.getInstance().getUserController().listActives().getFirst()
+            );
+            return;
+        }
+
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
