@@ -48,8 +48,9 @@ public class UserService {
     public void create(String username, String password, String fullName, String role) {
         validateUserData(username, password, fullName, role);
 
-        repository.searchByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("El usuario '" + username + "' ya existe."));
+        if (repository.searchByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("El usuario '" + username + "' ya existe.");
+        }
 
         User user = new User();
         user.setUsername(username.trim().toLowerCase());
