@@ -34,10 +34,6 @@ public class ProductController {
         service.delete(id);
     }
 
-    public void changeState(int id) {
-        service.changeState(id);
-    }
-
     public List<Product> listAll() {
         return service.listAll();
     }
@@ -46,11 +42,19 @@ public class ProductController {
         return service.listActives();
     }
 
-    public List<Product> listByCategory(String category) {
-        return service.listByCategory(category);
+    public List<Product> searchByCategory(String category) {
+        return service.searchByCategory(category);
     }
 
     public List<Product> searchByName(String name) {
         return service.searchByName(name);
+    }
+
+    public void enable(int id) {
+        service.enable(id);
+    }
+
+    public void disable(int id) {
+        service.disable(id);
     }
 }

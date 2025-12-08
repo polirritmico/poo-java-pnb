@@ -107,7 +107,7 @@ public class ProductsPanel extends javax.swing.JPanel {
             if (category.equals("TODOS")) {
                 matches = controller.listAll();
             } else {
-                matches = controller.listByCategory(category);
+                matches = controller.searchByCategory(category);
             }
 
             productsTableModel.setProducts(matches);
@@ -566,7 +566,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void changeStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStateButtonActionPerformed
-        controller.changeState(selectedProduct.getId());
+        if (selectedProduct.isActive()) {
+            controller.disable(selectedProduct.getId());
+        } else {
+            controller.enable(selectedProduct.getId());
+        }
         loadInForm(selectedProduct);
         cleanForm();
     }//GEN-LAST:event_changeStateButtonActionPerformed

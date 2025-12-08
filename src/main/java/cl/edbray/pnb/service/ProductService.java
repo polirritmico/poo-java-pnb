@@ -39,10 +39,9 @@ public class ProductService {
     ) {
         validateProductData(name, category, type, price);
 
-        Product product = repository.searchById(id);
-        if (product == null) {
+        Product product = repository.searchById(id).orElseThrow(() -> {
             throw new RuntimeException("Producto no encontrado");
-        }
+        });
 
         product.setName(name.trim());
         product.setCategory(category);
@@ -54,21 +53,16 @@ public class ProductService {
     }
 
     public void delete(int id) {
-        Product product = repository.searchById(id);
-        if (product == null) {
-            throw new RuntimeException("Producto no encontrado");
-        }
-
-        repository.changeState(id, !product.isActive());
+        // TODO: add validations?
+        repository.delete(id);
     }
 
-    public void changeState(int id) {
-        Product product = repository.searchById(id);
-        if (product == null) {
-            throw new RuntimeException("Producto no encontrado");
-        }
+    public void enable(int id) {
+        repository.enable(id);
+    }
 
-        repository.changeState(id, !product.isActive());
+    public void disable(int id) {
+        repository.disable(id);
     }
 
     public List<Product> listAll() {
@@ -79,19 +73,12 @@ public class ProductService {
         return repository.listActive();
     }
 
-    public List<Product> listByCategory(String category) {
-        return repository.listByCategory(category);
+    public List<Product> searchByCategory(String category) {
+        return repository.searchByCategory(category);
     }
 
     public List<Product> searchByName(String name) {
-        if (name == null || name.isBlank()) {
-            return listAll();
-        }
-
-        String searchLower = name.toLowerCase();
-        return repository.listAll().stream()
-            .filter(p -> p.getName().toLowerCase().contains(searchLower))
-            .collect(Collectors.toList());
+        return repository.searchByName(name);
     }
 
     private void validateProductData(

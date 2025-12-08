@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import cl.edbray.pnb.repository.ProductRepository;
+import java.util.Optional;
 
 /**
  *
@@ -48,11 +49,10 @@ public class ProductRepositoryMock implements ProductRepository {
     }
 
     @Override
-    public Product searchById(int id) {
+    public Optional<Product> searchById(int id) {
         return products.stream()
             .filter(p -> p.getId() == id)
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ProductRepositoryMock implements ProductRepository {
     }
 
     @Override
-    public List<Product> listByCategory(String category) {
+    public List<Product> searchByCategory(String category) {
         return products.stream()
             .filter(p -> p.getCategory().equalsIgnoreCase(category))
             .collect(Collectors.toList());
@@ -83,19 +83,19 @@ public class ProductRepositoryMock implements ProductRepository {
     }
 
     @Override
-    public int save(Product product) {
+    public Product save(Product product) {
         product.setId(nextId++);
         products.add(product);
-        return product.getId();
+        return product;
     }
 
     @Override
     public void update(Product product) {
-        Product storedProduct = searchById(product.getId());
-        if (storedProduct != null) {
+
+        searchById(product.getId()).ifPresent(storedProduct -> {
             int idx = products.indexOf(storedProduct);
             products.set(idx, product);
-        }
+        });
     }
 
     @Override
@@ -104,10 +104,16 @@ public class ProductRepositoryMock implements ProductRepository {
     }
 
     @Override
-    public void changeState(int id, boolean state) {
-        Product storedProduct = searchById(id);
-        if (storedProduct != null) {
-            storedProduct.setActive(state);
-        }
+    public void enable(int id) {
+        searchById(id).ifPresent(p -> {
+            p.setActive(true);
+        });
+    }
+
+    @Override
+    public void disable(int id) {
+        searchById(id).ifPresent(p -> {
+            p.setActive(false);
+        });
     }
 }

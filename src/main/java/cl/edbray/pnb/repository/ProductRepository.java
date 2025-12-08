@@ -6,6 +6,7 @@ package cl.edbray.pnb.repository;
 
 import cl.edbray.pnb.model.Product;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrato de operaciones para acceso a datos de producto
@@ -13,13 +14,6 @@ import java.util.List;
  * @author eduardo
  */
 public interface ProductRepository {
-
-    /**
-     * Busca un producto por su ID
-     *
-     * @param id Id a buscar
-     */
-    Product searchById(int id);
 
     /**
      * Lista todos los productos
@@ -36,12 +30,12 @@ public interface ProductRepository {
     List<Product> listActive();
 
     /**
-     * Lista productos por categoría
+     * Buscar productos por categoría
      *
      * @param category BEBIDA, SNACK, TIEMPO
-     * @return lista con los productos de la categoria ingresada
+     * @return lista con los productos encontrados de la categoria ingresada
      */
-    List<Product> listByCategory(String category);
+    List<Product> searchByCategory(String category);
 
     /**
      * Busca productos por nombre (búsqueda parcial)
@@ -52,12 +46,20 @@ public interface ProductRepository {
     List<Product> searchByName(String name);
 
     /**
+     * Busca un producto por su ID
+     *
+     * @param id Id a buscar
+     * @return Optional del producto encontrado
+     */
+    Optional<Product> searchById(int id);
+
+    /**
      * Guarda un nuevo producto
      *
      * @param product Producto a guardar
      * @return El id asignado del producto agregado
      */
-    int save(Product product);
+    Product save(Product product);
 
     /**
      * Actualiza un producto existente
@@ -74,10 +76,16 @@ public interface ProductRepository {
     void delete(int id);
 
     /**
-     * Cambia el estado activo/inactivo de un producto
+     * Cambia el estado de un producto a activo
      *
      * @param id Id del producto a actualizar
-     * @param state el nuevo valor
      */
-    void changeState(int id, boolean state);
+    void enable(int id);
+
+    /**
+     * Cambia el estado de un producto a inactivo
+     *
+     * @param id Id del producto a actualizar
+     */
+    void disable(int id);
 }
