@@ -4,7 +4,7 @@
  */
 package cl.edbray.pnb.utils.tests;
 
-import cl.edbray.pnb.utils.DatabaseConnectionFactory;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,7 +22,7 @@ public class TestDBConnection {
         System.out.println("===========================================\n");
 
         System.out.println("Test 1: Conexión básica");
-        boolean connected = DatabaseConnectionFactory.testConnection();
+        boolean connected = MysqlDBConnectionManager.testConnection();
 
         if (!connected) {
             System.err.println("\n❌ No se pudo conectar a la base de datos.");
@@ -33,7 +33,7 @@ public class TestDBConnection {
 
         System.out.println("Test 2: Consultar usuarios");
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT id, username, rol FROM usuario")
         ) {
@@ -60,7 +60,7 @@ public class TestDBConnection {
         System.out.println("\n-------------------------------------------\n");
 
         System.out.println("Test 3: Consultar productos");
-        try (Connection conn = DatabaseConnectionFactory.getConnection();
+        try (Connection conn = MysqlDBConnectionManager.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT categoria, COUNT(*) as total FROM producto GROUP BY categoria")) {
 

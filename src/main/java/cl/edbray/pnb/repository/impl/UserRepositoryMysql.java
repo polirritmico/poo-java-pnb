@@ -6,7 +6,7 @@ package cl.edbray.pnb.repository.impl;
 
 import cl.edbray.pnb.model.User;
 import cl.edbray.pnb.repository.UserRepository;
-import cl.edbray.pnb.utils.DatabaseConnectionFactory;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,7 +72,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public Optional<User> authenticate(String username, String password) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_AUTHENTICATE)
         ) {
             ps.setString(1, username);
@@ -97,7 +97,7 @@ public class UserRepositoryMysql implements UserRepository {
         List<User> users = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ALL);
             ResultSet rs = ps.executeQuery()
         ) {
@@ -117,7 +117,7 @@ public class UserRepositoryMysql implements UserRepository {
         List<User> users = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ACTIVE);
             ResultSet rs = ps.executeQuery()
         ) {
@@ -135,7 +135,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public Optional<User> searchById(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID);
         ) {
             ps.setInt(1, id);
@@ -156,7 +156,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public Optional<User> searchByUsername(String username) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_USERNAME);
         ) {
             ps.setString(1, username);
@@ -177,7 +177,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public User save(User user) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, user.getUsername());
@@ -211,7 +211,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public void update(User user) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)
         ) {
             ps.setString(1, user.getUsername());
@@ -236,7 +236,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public void delete(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_DELETE)
         ) {
             ps.setInt(1, id);
@@ -255,7 +255,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public void enable(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_STATE)
         ) {
             ps.setBoolean(1, true);
@@ -272,7 +272,7 @@ public class UserRepositoryMysql implements UserRepository {
     @Override
     public void disable(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_STATE)
         ) {
             ps.setBoolean(1, false);

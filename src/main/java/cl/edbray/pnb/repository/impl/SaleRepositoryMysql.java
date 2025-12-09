@@ -5,8 +5,9 @@
 package cl.edbray.pnb.repository.impl;
 
 import cl.edbray.pnb.model.Sale;
+import cl.edbray.pnb.model.SaleDetail;
 import cl.edbray.pnb.repository.SaleRepository;
-import cl.edbray.pnb.utils.DatabaseConnectionFactory;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +24,12 @@ import java.util.Optional;
  * @author eduardo
  */
 public class SaleRepositoryMysql implements SaleRepository{
+
+    private final MysqlDBConnectionManager connectionFactory;
+
+    public SaleRepositoryMysql(MysqlDBConnectionManager connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     private static final String SQL_SELECT_BASE =
         "SELECT v.id, v.fecha_hora, v.usuario_id, v.total, v.estado, v.observaciones, u.username "
@@ -45,6 +52,11 @@ public class SaleRepositoryMysql implements SaleRepository{
         "INSERT INTO venta (fecha_hora, usuario_id, total, estado) "
         + "VALUES (?, ?, ?, ?)";
 
+    private static final String SQL_INSERT_DETAIL =
+        "INSERT INTO venta_detalle "
+        + "(venta_id, producto_id, producto_nombre, cantidad, precio_unitario, subtotal) "
+        + "VALUES (?, ?, ?, ?, ?, ?)";
+
     private static final String SQL_CANCEL =
         "UPDATE venta SET estado = 'ANULADA' WHERE id = ?";
 
@@ -62,10 +74,23 @@ public class SaleRepositoryMysql implements SaleRepository{
         return sale;
     }
 
+    private SaleDetail mapDetail(ResultSet rs) throws SQLException {
+        SaleDetail detail = new SaleDetail();
+        detail.setId(rs.getInt("id"));
+        detail.setSaleId(rs.getInt("venta_id"));
+        detail.setProductId(rs.getInt("producto_id"));
+        detail.setProductName(rs.getString("producto_nombre"));
+        detail.setAmount(rs.getInt("amount"));
+        detail.setUnitPrice(rs.getDouble("precio_unitario"));
+        detail.setSubtotal(rs.getDouble("subtotal"));
+
+        return detail;
+    }
+
     @Override
     public Optional<Sale> searchById(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID);
         ) {
             ps.setInt(1, id);
@@ -89,7 +114,7 @@ public class SaleRepositoryMysql implements SaleRepository{
         List<Sale> sales = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BASE);
             ResultSet rs = ps.executeQuery()
         ) {
@@ -112,7 +137,7 @@ public class SaleRepositoryMysql implements SaleRepository{
         Timestamp untilTS = Timestamp.valueOf(until);
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_DATE_RANGE);
         ) {
             ps.setTimestamp(1, fromTS);
@@ -137,7 +162,7 @@ public class SaleRepositoryMysql implements SaleRepository{
         List<Sale> sales = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_TODAY);
         ) {
             try (ResultSet rs = ps.executeQuery()) {
@@ -155,45 +180,76 @@ public class SaleRepositoryMysql implements SaleRepository{
 
     @Override
     public int save(Sale sale) {
-        try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
-            PreparedStatement ps = conn.prepareStatement(
-                SQL_INSERT, Statement.RETURN_GENERATED_KEYS
-            );
-        ) {
-            //"INSERT INTO venta (fecha_hora, usuario_id, total, estado) "
-            //this.dateTime = dateTime;
-            //this.userId = userId;
-            //this.total = total;
-            //this.state = state;
-            ps.setTimestamp(1, Timestamp.valueOf(sale.getDateTime()));
-            ps.setInt(2, sale.getUserId());
-            ps.setDouble(3, sale.getTotal());
-            ps.setString(4, sale.getState());
+        Connection conn = null;
 
-            int rowsAffected = ps.executeUpdate();
+        try {
+            conn = connectionFactory.getConnection();
+            conn.setAutoCommit(false);
 
-            if (rowsAffected > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
+            int saleId;
+            try (
+                PreparedStatement psSale = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)
+            ) {
+                psSale.setTimestamp(1, Timestamp.valueOf(sale.getDateTime()));
+                psSale.setInt(2, sale.getUserId());
+                psSale.setDouble(3, sale.getTotal());
+                psSale.setString(4, sale.getState());
+
+                psSale.executeUpdate();
+
+                try (ResultSet rs = psSale.getGeneratedKeys()) {
                     if (rs.next()) {
-                        sale.setId(rs.getInt(1));
+                        saleId = rs.getInt(1);
+                        sale.setId(saleId);
+                    } else {
+                        throw new SQLException("Error al obtener ID de venta");
                     }
                 }
             }
 
-        } catch (SQLException e) {
-            System.err.println("Error al registrar venta");
-            e.printStackTrace();
-            throw new RuntimeException("Error al registrar venta", e);
-        }
+            try(PreparedStatement prDetail = conn.prepareStatement(SQL_INSERT_DETAIL)) {
+                for (SaleDetail detail : sale.getDetails()) {
+                    prDetail.setInt(1, saleId);
+                    prDetail.setInt(2, detail.getProductId());
+                    prDetail.setString(3, detail.getProductName());
+                    prDetail.setInt(4, detail.getAmount());
+                    prDetail.setDouble(5, detail.getUnitPrice());
+                    prDetail.setDouble(6, detail.getSubtotal());
 
+                    prDetail.addBatch();
+                }
+
+                prDetail.executeBatch();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new RuntimeException("Error al guardar venta", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return sale.getId();
     }
 
     @Override
     public void cancel(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_CANCEL);
         ) {
             ps.setInt(1, id);
@@ -208,5 +264,25 @@ public class SaleRepositoryMysql implements SaleRepository{
             e.printStackTrace();
             throw new RuntimeException("Error al cancelar venta", e);
         }
+    }
+
+    private List<SaleDetail> findDetailsBySaleID(Connection conn, int saleId) {
+        String sql = "SELECT * FROM venta_detalle WHERE venta_id = ?";
+
+        List<SaleDetail> details = new ArrayList<>();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, saleId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    details.add(mapDetail(rs));
+                }
+                return details;
+            }
+        } catch (Exception e) {
+            System.out.println("No se pudo buscar detalles por id de venta");
+            e.printStackTrace();
+        }
+        return details;
     }
 }

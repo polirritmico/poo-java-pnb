@@ -16,7 +16,7 @@ import java.util.Properties;
  *
  * @author eduardo
  */
-public class DatabaseConnectionFactory {
+public class MysqlDBConnectionManager {
 
     private static String url;
     private static String username;
@@ -33,7 +33,6 @@ public class DatabaseConnectionFactory {
             password = props.getProperty("db.password");
             driver = props.getProperty("db.driver");
 
-            // Optional with JDBC >4.0, but recomended
             Class.forName(driver);
 
             System.out.println("✅ Configuración de base de datos cargada correctamente");
@@ -52,16 +51,15 @@ public class DatabaseConnectionFactory {
     }
 
     /**
-     * Obtiene una nueva conexión a la base de datos.
+     * Obtiene una nueva conexión a la base de datos.El caller es responsable de cerrar la conexión cuando termine de usarla.
      *
-     * El caller es responsable de cerrar la conexión cuando termine de usarla.
      * Se recomienda usar try-with-resources:
-     *
-     * <pre>
-     * try (Connection conn = DatabaseConnectionFactory.getConnection()) {
-     *     // Usar conexión
-     * }
-     * </pre>
+
+ <pre>
+ try (Connection conn = MysqlDBConnectionManager.getConnection()) {
+     // Usar conexión
+ }
+ </pre>
      *
      * @return Connection activa a la base de datos
      * @throws SQLException si no se puede establecer conexión

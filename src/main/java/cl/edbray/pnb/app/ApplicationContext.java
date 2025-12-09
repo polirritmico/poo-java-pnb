@@ -17,6 +17,7 @@ import cl.edbray.pnb.repository.ProductRepository;
 import cl.edbray.pnb.repository.impl.ProductRepositoryMysql;
 import cl.edbray.pnb.repository.impl.SaleRepositoryMysql;
 import cl.edbray.pnb.repository.impl.UserRepositoryMysql;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 
 /**
  * Contenedor de Inversión de Control (IoC) manual Responsable de:
@@ -68,9 +69,11 @@ public class ApplicationContext {
     private void initRepositories() {
         System.out.println("  📦 Creando repositorios Mock...");
 
+        MysqlDBConnectionManager connectionFactory = new MysqlDBConnectionManager();
+
         userRepository = new UserRepositoryMysql();
         productRepository = new ProductRepositoryMysql();
-        saleRepository = new SaleRepositoryMysql();
+        saleRepository = new SaleRepositoryMysql(connectionFactory);
 
         System.out.println("  ✓ Repositorios creados");
     }

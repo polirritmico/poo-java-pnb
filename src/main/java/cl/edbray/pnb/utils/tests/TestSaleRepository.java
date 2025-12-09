@@ -7,6 +7,7 @@ package cl.edbray.pnb.utils.tests;
 import cl.edbray.pnb.model.Sale;
 import cl.edbray.pnb.repository.SaleRepository;
 import cl.edbray.pnb.repository.impl.SaleRepositoryMysql;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -20,7 +21,10 @@ public class TestSaleRepository {
         System.out.println("   TEST: VentaRepository (JDBC)           ");
         System.out.println("===========================================\n");
 
-        SaleRepository repository = new SaleRepositoryMysql();
+
+        MysqlDBConnectionManager connectionFactory = new MysqlDBConnectionManager();
+
+        SaleRepository repository = new SaleRepositoryMysql(connectionFactory);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         // Test 1: Ventas del día

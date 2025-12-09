@@ -6,7 +6,7 @@ package cl.edbray.pnb.repository.impl;
 
 import cl.edbray.pnb.model.Product;
 import cl.edbray.pnb.repository.ProductRepository;
-import cl.edbray.pnb.utils.DatabaseConnectionFactory;
+import cl.edbray.pnb.utils.MysqlDBConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,7 +67,7 @@ public class ProductRepositoryMysql implements ProductRepository {
         List<Product> products = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ALL + " ORDER BY categoria, nombre");
             ResultSet rs = ps.executeQuery()
         ) {
@@ -87,7 +87,7 @@ public class ProductRepositoryMysql implements ProductRepository {
         List<Product> products = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ACTIVE);
             ResultSet rs = ps.executeQuery()
         ) {
@@ -107,7 +107,7 @@ public class ProductRepositoryMysql implements ProductRepository {
         List<Product> products = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_CATEGORY);
         ) {
             ps.setString(1, category);
@@ -130,7 +130,7 @@ public class ProductRepositoryMysql implements ProductRepository {
         List<Product> products = new ArrayList<>();
 
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_NAME);
         ) {
             ps.setString(1, "%" + name + "%");
@@ -151,7 +151,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public Optional<Product> searchById(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID);
         ) {
             ps.setInt(1, id);
@@ -172,7 +172,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public Product save(Product product) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
         ) {
             ps.setString(1, product.getName());
@@ -205,7 +205,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public void update(Product product) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE);
         ) {
             ps.setString(1, product.getName());
@@ -229,7 +229,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public void delete(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_DELETE);
         ) {
             ps.setInt(1, id);
@@ -245,7 +245,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public void enable(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_STATE);
         ) {
             ps.setBoolean(1, true);
@@ -262,7 +262,7 @@ public class ProductRepositoryMysql implements ProductRepository {
     @Override
     public void disable(int id) {
         try (
-            Connection conn = DatabaseConnectionFactory.getConnection();
+            Connection conn = MysqlDBConnectionManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_STATE);
         ) {
             ps.setBoolean(1, false);
